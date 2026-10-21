@@ -115,7 +115,7 @@ export async function runQuery(query, patientId) {
 
 export async function runSecondOpinion(diagnosis, patientId) {
   try {
-    const r = await fetch(`${BASE}/second-opinion`, {
+    const r = await fetch(`${BASE}/second-opinion/structured`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ hypothesis: diagnosis, patient_id: patientId }),
@@ -140,7 +140,7 @@ export async function runSecondOpinion(diagnosis, patientId) {
           'No recent biopsy data available to confirm histological diagnosis.',
           'Hypertensive nephrosclerosis cannot be excluded given BP variability.'
         ],
-        raw_agent_response: 'Local fallback — Gemini API rate-limited'
+        raw_agent_response: 'Local fallback — AI API rate-limited'
       };
     }
     // Generic fallback for any other hypothesis
@@ -153,7 +153,7 @@ export async function runSecondOpinion(diagnosis, patientId) {
       contradict: [
         'Comprehensive validation requires a live AI analysis. Results reflect offline estimation only.'
       ],
-      raw_agent_response: 'Local fallback — Gemini API unavailable'
+      raw_agent_response: 'Local fallback — AI API unavailable'
     };
   }
 }
@@ -171,4 +171,32 @@ export async function verifyPill(imageBase64, prescriptionId) {
     logOffline('/pill/verify', err);
     return { vision_result: '{"shape": "round", "color": "white", "confidence_pct": 50}', prescription_id: prescriptionId };
   }
+}
+
+// Dashboard / analytics / calendar (computed server-side from patient data)
+async function getJson(path, fallback) {
+  try {
+    const r = await fetch(`${BASE}${path}`);
+    if (!r.ok) throw new Error(`HTTP error! status: ${r.status}`);
+    return await r.json();
+  } catch (err) {
+    logOffline(path, err);
+    return fallback;
+  }
+}
+
+export const fetchDashboardSummary = () => getJson('/dashboard/summary', null);
+export const fetchCohortAnalytics = () => getJson('/analytics/cohort', null);
+export const fetchAnomalyTimeline = (id) => getJson(`/analytics/anomaly/${id}`, { timeline: [] });
+export const fetchCalendarEvents = (start, days = 42) =>
+  getJson(`/calendar/events?days=${days}${start ? `&start=${start}` : ''}`, { events: [] });
+
+export async function createCalendarEvent(event) {
+  const r = await fetch(`${BASE}/calendar/events`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(event),
+  });
+  if (!r.ok) throw new Error(`HTTP error! status: ${r.status}`);
+  return r.json();
 }

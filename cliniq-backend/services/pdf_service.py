@@ -11,9 +11,11 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
 from services.supabase_service import db_service
+from services.store import store
 
-# Ensure a temp directory for matplotlib charts exists inside cliniq-backend
-TEMP_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "temp_charts")
+# Temp directory for matplotlib charts and PDFs (under /tmp on Lambda)
+from services.aws import WRITABLE_DIR
+TEMP_DIR = os.path.join(WRITABLE_DIR, "temp_charts")
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 class PDFService:
@@ -77,12 +79,8 @@ class PDFService:
         ))
 
     def _get_patient_data(self, patient_id: str) -> dict:
-        db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "database.json")
         try:
-            with open(db_path, 'r') as f:
-                db = json.load(f)
-                patients = db.get("patients", [])
-                return next((p for p in patients if p["id"] == patient_id), None)
+            return store.get_patient(patient_id)
         except Exception as e:
             print(f"Error loading patient data for PDF: {e}")
         return None
@@ -98,7 +96,7 @@ class PDFService:
         
         for idx, (test_name, readings) in enumerate(labs.items()):
             ax = axes[idx]
-            dates = [r["date"] for r in readings[-12:]] # last 12 readings
+            dates = [r.get("date", r.get("time")) for r in readings[-12:]] # last 12 readings
             vals = [r["val"] for r in readings[-12:]]
             
             ax.plot(dates, vals, marker='o', color='#7C3AED', linewidth=2)

@@ -7,20 +7,17 @@ const SecondOpinionPanel = ({ patient }) => {
   const [diagnosis, setDiagnosis] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(null);
-  const [isTestingCustom, setIsTestingCustom] = useState(false);
 
   useEffect(() => {
     setDiagnosis('');
     setResponse(null);
     setIsLoading(false);
-    setIsTestingCustom(false);
   }, [patient]);
 
   // Demo listener
   useEffect(() => {
     if (!demoEvent) return;
     if (demoEvent.action === 'type_opinion') {
-      setIsTestingCustom(true);
       const text = demoEvent.payload;
       let i = 0;
       setDiagnosis('');
@@ -49,14 +46,6 @@ const SecondOpinionPanel = ({ patient }) => {
     }
   };
 
-  const handleBackToDefault = () => {
-    setIsTestingCustom(false);
-    setDiagnosis('');
-    setResponse(null);
-  };
-
-  // Check if we should render default opinion for Arjun Mehta (P-00142)
-  const showDefaultOpinion = patient.id === 'P-00142' && !isTestingCustom && !response;
 
   return (
     <section className="bg-white rounded-[32px] p-8 shadow-xl shadow-black/5 flex flex-col justify-between relative overflow-hidden border border-gray-150 animate-fade-in-up h-full min-h-[480px]">
@@ -72,50 +61,7 @@ const SecondOpinionPanel = ({ patient }) => {
           <span className="px-3 py-1 bg-[#FFDE59] text-black rounded-full font-label-bold text-[11px] uppercase tracking-wider font-bold shadow-sm font-sans">Beta</span>
         </div>
 
-        {showDefaultOpinion ? (
-          /* Default Opinion matches mockup */
-          <div className="flex flex-col gap-5 flex-1 justify-between">
-            <div className="flex flex-col gap-5">
-              {/* Quote block */}
-              <div className="border-l-4 border-[#F5C324] pl-4 py-1.5 italic text-[17px] text-[#1B1C1A] font-semibold leading-relaxed font-sans">
-                "Stress-testing primary hypothesis: Diabetic Nephropathy."
-              </div>
-
-              {/* Alternative considerations */}
-              <div className="flex flex-col gap-3">
-                <h4 className="text-xs font-black text-[#858A8A] uppercase tracking-widest font-sans">
-                  Alternative Considerations
-                </h4>
-                <ul className="flex flex-col gap-2">
-                  <li className="flex items-start gap-2.5 text-xs text-gray-700 font-semibold leading-relaxed font-sans">
-                    <span className="text-[#F5C324] text-base shrink-0 leading-none select-none">•</span>
-                    <span>Hypertensive nephrosclerosis (high probability given recent BP variability).</span>
-                  </li>
-                  <li className="flex items-start gap-2.5 text-xs text-gray-700 font-semibold leading-relaxed font-sans">
-                    <span className="text-[#F5C324] text-base shrink-0 leading-none select-none">•</span>
-                    <span>Drug-induced renal impairment (review recent NSAID use).</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* View Full Analysis button & Custom toggle */}
-            <div className="flex flex-col gap-3 mt-4">
-              <button 
-                onClick={() => alert("Loading full diagnostic trace...")}
-                className="w-full py-3.5 bg-white hover:bg-gray-50 border border-gray-250 text-black font-extrabold text-sm rounded-full transition-all duration-205 uppercase tracking-wider shadow-sm cursor-pointer"
-              >
-                View Full Analysis
-              </button>
-              <button
-                onClick={() => setIsTestingCustom(true)}
-                className="text-center text-xs font-bold text-gray-500 hover:text-black transition-colors"
-              >
-                Test Custom Hypothesis
-              </button>
-            </div>
-          </div>
-        ) : (
+        {(
           /* Custom hypothesis form / results */
           <div className="flex flex-col gap-4 flex-1 justify-between">
             <div className="flex flex-col gap-4">
@@ -154,6 +100,9 @@ const SecondOpinionPanel = ({ patient }) => {
                   }`}>
                     {response.verdict}
                   </span>
+                  {response.confidence != null && (
+                    <p className="text-[11px] font-bold text-gray-500 mt-2">AI confidence {response.confidence}%</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -182,15 +131,6 @@ const SecondOpinionPanel = ({ patient }) => {
               </div>
             )}
 
-            {/* Link back to default analysis if custom view is active */}
-            {patient.id === 'P-00142' && (
-              <button
-                onClick={handleBackToDefault}
-                className="text-center text-xs font-bold text-gray-400 hover:text-black mt-4 transition-colors"
-              >
-                Back to Default Opinion
-              </button>
-            )}
           </div>
         )}
       </div>

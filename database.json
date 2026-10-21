@@ -1,0 +1,479 @@
+{
+  "patients": [
+    {
+      "id": "P-00142",
+      "name": "Arjun Mehta",
+      "age": 58,
+      "sex": "Male",
+      "dob": "12 Mar 1967",
+      "diagnosis": [
+        "Type 2 Diabetes",
+        "Hypertension",
+        "CKD Stage 2"
+      ],
+      "doctor": "Dr. Priya Nair",
+      "ward": "Endocrinology",
+      "riskScore": 78,
+      "adherenceScore": 61,
+      "medications": [
+        {
+          "name": "Metformin",
+          "dose": "500mg",
+          "freq": "Twice daily",
+          "color": "#22D3EE",
+          "shape": "Round",
+          "markings": "MF500"
+        },
+        {
+          "name": "Amlodipine",
+          "dose": "5mg",
+          "freq": "Once daily",
+          "color": "#FBBF24",
+          "shape": "Oval",
+          "markings": "AML5"
+        },
+        {
+          "name": "Lisinopril",
+          "dose": "10mg",
+          "freq": "Once daily",
+          "color": "#F87171",
+          "shape": "Round",
+          "markings": "LIS10"
+        }
+      ],
+      "labs": {
+        "HbA1c": [
+          {
+            "date": "Jul 24",
+            "val": 6.8
+          },
+          {
+            "date": "Sep 24",
+            "val": 7.1
+          },
+          {
+            "date": "Nov 24",
+            "val": 7.8
+          },
+          {
+            "date": "Jan 25",
+            "val": 8.3
+          },
+          {
+            "date": "Mar 25",
+            "val": 8.9
+          },
+          {
+            "date": "May 25",
+            "val": 9.2
+          },
+          {
+            "date": "Jul 25",
+            "val": 9.5
+          },
+          {
+            "date": "Sep 25",
+            "val": 8.6
+          }
+        ],
+        "Creatinine": [
+          {
+            "date": "Jul 24",
+            "val": 1.0
+          },
+          {
+            "date": "Sep 24",
+            "val": 1.1
+          },
+          {
+            "date": "Nov 24",
+            "val": 1.2
+          },
+          {
+            "date": "Jan 25",
+            "val": 1.4
+          },
+          {
+            "date": "Mar 25",
+            "val": 1.6
+          },
+          {
+            "date": "May 25",
+            "val": 1.7
+          },
+          {
+            "date": "Jul 25",
+            "val": 1.9
+          },
+          {
+            "date": "Sep 25",
+            "val": 2.1
+          }
+        ],
+        "BP_Systolic": [
+          {
+            "date": "Jul 24",
+            "val": 128
+          },
+          {
+            "date": "Sep 24",
+            "val": 132
+          },
+          {
+            "date": "Nov 24",
+            "val": 138
+          },
+          {
+            "date": "Jan 25",
+            "val": 141
+          },
+          {
+            "date": "Mar 25",
+            "val": 145
+          },
+          {
+            "date": "May 25",
+            "val": 148
+          },
+          {
+            "date": "Jul 25",
+            "val": 152
+          },
+          {
+            "date": "Sep 25",
+            "val": 143
+          }
+        ]
+      },
+      "bodyFlags": [
+        "Kidney",
+        "Heart"
+      ],
+      "clinicalPatterns": [
+        {
+          "type": "Lab Alert",
+          "time": "2h ago",
+          "description": "HbA1c increased significantly over 12 months.",
+          "severity": "HIGH"
+        },
+        {
+          "type": "Vitals",
+          "time": "5h ago",
+          "description": "Blood pressure remains elevated despite dual-therapy.",
+          "severity": "MEDIUM"
+        },
+        {
+          "type": "Adherence",
+          "time": "1d ago",
+          "description": "Missed 3 doses of Lisinopril this week.",
+          "severity": "MEDIUM"
+        },
+        {
+          "type": "Renal",
+          "time": "2d ago",
+          "description": "Creatinine trend suggests progressing Stage 3 CKD.",
+          "severity": "HIGH"
+        }
+      ],
+      "adherenceCalendar": [
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false
+      ],
+      "consultBrief": "T2DM uncontrolled. Advise titration of insulin or SGLT2i. Monitor renal function closely."
+    },
+    {
+      "id": "P-00284",
+      "name": "Kavitha Rajan",
+      "age": 45,
+      "sex": "Female",
+      "dob": "05 Aug 1980",
+      "diagnosis": [
+        "Rheumatoid Arthritis",
+        "Anaemia",
+        "Asthma"
+      ],
+      "doctor": "Dr. Ananya Sharma",
+      "ward": "Rheumatology",
+      "riskScore": 45,
+      "adherenceScore": 92,
+      "medications": [
+        {
+          "name": "Methotrexate",
+          "dose": "15mg",
+          "freq": "Once weekly",
+          "color": "#818CF8",
+          "shape": "Capsule",
+          "markings": "MTX15"
+        },
+        {
+          "name": "Folic Acid",
+          "dose": "5mg",
+          "freq": "Once daily",
+          "color": "#34D399",
+          "shape": "Round",
+          "markings": "FA5"
+        },
+        {
+          "name": "Salbutamol",
+          "dose": "100mcg",
+          "freq": "PRN",
+          "color": "#60A5FA",
+          "shape": "Inhaler",
+          "markings": "VENT"
+        }
+      ],
+      "labs": {
+        "ESR": [
+          {
+            "date": "Jul 24",
+            "val": 52
+          },
+          {
+            "date": "Sep 24",
+            "val": 45
+          },
+          {
+            "date": "Nov 24",
+            "val": 38
+          },
+          {
+            "date": "Jan 25",
+            "val": 30
+          },
+          {
+            "date": "Mar 25",
+            "val": 28
+          },
+          {
+            "date": "May 25",
+            "val": 22
+          },
+          {
+            "date": "Jul 25",
+            "val": 18
+          },
+          {
+            "date": "Sep 25",
+            "val": 15
+          }
+        ],
+        "Hemoglobin": [
+          {
+            "date": "Jul 24",
+            "val": 9.0
+          },
+          {
+            "date": "Sep 24",
+            "val": 9.5
+          },
+          {
+            "date": "Nov 24",
+            "val": 10.2
+          },
+          {
+            "date": "Jan 25",
+            "val": 11.0
+          },
+          {
+            "date": "Mar 25",
+            "val": 11.5
+          },
+          {
+            "date": "May 25",
+            "val": 12.1
+          },
+          {
+            "date": "Jul 25",
+            "val": 12.5
+          },
+          {
+            "date": "Sep 25",
+            "val": 12.8
+          }
+        ]
+      },
+      "bodyFlags": [
+        "Joints",
+        "Lungs"
+      ],
+      "clinicalPatterns": [
+        {
+          "type": "Lab Good",
+          "time": "12h ago",
+          "description": "ESR normalized under DMARD therapy.",
+          "severity": "LOW"
+        },
+        {
+          "type": "Lab Good",
+          "time": "1d ago",
+          "description": "Anemia resolved (Hgb > 12.5).",
+          "severity": "LOW"
+        }
+      ],
+      "adherenceCalendar": [
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true
+      ],
+      "consultBrief": "RA stable. Mild asthma symptoms reported. Bone density scan recommended."
+    }
+  ],
+  "pill_events": [
+    {
+      "id": 1,
+      "status": "confirmed",
+      "drug": "Metformin",
+      "time": "08:00 AM"
+    },
+    {
+      "id": 2,
+      "status": "wrong",
+      "drug": "Lisinopril",
+      "time": "08:05 AM",
+      "expected": "Amlodipine"
+    },
+    {
+      "id": 3,
+      "status": "unconfirmed",
+      "drug": "Unknown",
+      "time": "12:00 PM"
+    },
+    {
+      "id": 4,
+      "status": "confirmed",
+      "drug": "Amlodipine",
+      "time": "08:00 PM"
+    }
+  ],
+  "interactions": [
+    {
+      "drug_a": "Lisinopril",
+      "drug_b": "Amlodipine",
+      "severity": "low",
+      "desc": "Antihypertensive synergism, monitor BP."
+    },
+    {
+      "drug_a": "Metformin",
+      "drug_b": "Amlodipine",
+      "severity": "none",
+      "desc": "No significant interaction."
+    },
+    {
+      "drug_a": "Methotrexate",
+      "drug_b": "Folic Acid",
+      "severity": "none",
+      "desc": "Folic acid reduces MTX toxicity."
+    },
+    {
+      "drug_a": "Metformin",
+      "drug_b": "Lisinopril",
+      "severity": "none",
+      "desc": "No significant interaction."
+    },
+    {
+      "drug_a": "Methotrexate",
+      "drug_b": "Aspirin",
+      "severity": "high",
+      "desc": "Aspirin reduces MTX excretion, increasing risk of toxicity."
+    },
+    {
+      "drug_a": "Lisinopril",
+      "drug_b": "Ibuprofen",
+      "severity": "medium",
+      "desc": "NSAIDs can reduce ACE inhibitor efficacy and risk renal failure."
+    },
+    {
+      "drug_a": "Metformin",
+      "drug_b": "Contrast Dye",
+      "severity": "high",
+      "desc": "Risk of lactic acidosis. Suspend Metformin 48h prior."
+    },
+    {
+      "drug_a": "Warfarin",
+      "drug_b": "Aspirin",
+      "severity": "high",
+      "desc": "Major bleeding risk. Monitor PT/INR closely."
+    },
+    {
+      "drug_a": "Simvastatin",
+      "drug_b": "Amlodipine",
+      "severity": "medium",
+      "desc": "Amlodipine increases Simvastatin exposure. Limit Simvastatin to 20mg."
+    },
+    {
+      "drug_a": "Lisinopril",
+      "drug_b": "Spironolactone",
+      "severity": "high",
+      "desc": "Risk of severe hyperkalemia."
+    },
+    {
+      "drug_a": "Clopidogrel",
+      "drug_b": "Omeprazole",
+      "severity": "medium",
+      "desc": "Omeprazole may reduce antiplatelet effect of Clopidogrel."
+    },
+    {
+      "drug_a": "Digoxin",
+      "drug_b": "Amiodarone",
+      "severity": "high",
+      "desc": "Amiodarone significantly increases digoxin levels."
+    },
+    {
+      "drug_a": "Ciprofloxacin",
+      "drug_b": "Theophylline",
+      "severity": "high",
+      "desc": "Inhibition of metabolism, risk of theophylline toxicity."
+    },
+    {
+      "drug_a": "Levothyroxine",
+      "drug_b": "Calcium Carbonate",
+      "severity": "medium",
+      "desc": "Calcium impairs absorption of thyroxine."
+    },
+    {
+      "drug_a": "Sildenafil",
+      "drug_b": "Isosorbide Mononitrate",
+      "severity": "critical",
+      "desc": "Severe hypotension risk. Contraindicated."
+    },
+    {
+      "drug_a": "Lithium",
+      "drug_b": "Hydrochlorothiazide",
+      "severity": "high",
+      "desc": "Diuretics increase lithium retention and toxicity."
+    },
+    {
+      "drug_a": "Metoprolol",
+      "drug_b": "Diltiazem",
+      "severity": "high",
+      "desc": "Risk of severe bradycardia and AV block."
+    },
+    {
+      "drug_a": "Rifampin",
+      "drug_b": "Oral Contraceptives",
+      "severity": "medium",
+      "desc": "Reduced effectiveness of hormonal birth control."
+    },
+    {
+      "drug_a": "Fluconazole",
+      "drug_b": "Simvastatin",
+      "severity": "high",
+      "desc": "Increased risk of myopathy and rhabdomyolysis."
+    },
+    {
+      "drug_a": "Amoxicillin",
+      "drug_b": "Probenecid",
+      "severity": "none",
+      "desc": "Probenecid increases penicillin half-life (therapeutic)."
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { BASE_API } from '../../config.js';
 
 const ConsultationRecorder = ({ patientId }) => {
   const [isRecording, setIsRecording] = useState(false);
@@ -86,7 +87,7 @@ const ConsultationRecorder = ({ patientId }) => {
     formData.append("physician_id", "doc-1");
 
     try {
-      const res = await fetch("https://dry-frog-85.loca.lt/api/voice/consultation-record", {
+      const res = await fetch(`${BASE_API}/voice/consultation-record`, {
         method: "POST",
         body: formData
       });
@@ -109,7 +110,7 @@ const ConsultationRecorder = ({ patientId }) => {
   const saveNote = async () => {
     setIsProcessing(true);
     try {
-      const res = await fetch("https://dry-frog-85.loca.lt/api/intake/save", {
+      const res = await fetch(`${BASE_API}/intake/save`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

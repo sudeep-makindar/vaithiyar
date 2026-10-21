@@ -5,6 +5,7 @@ import useSSEStream from '../hooks/useSSEStream';
 import TopHeader from '../components/TopHeader';
 import StreamingText from '../components/ui/StreamingText';
 import CalendarSidebar from '../components/CalendarSidebar';
+import { BASE_API } from '../config.js';
 
 const ComorbidityWeb = () => {
   const { patients, currentPatient, setCurrentPatient } = usePatientStore();
@@ -38,7 +39,7 @@ const ComorbidityWeb = () => {
     
     try {
       webSSE.setData('');
-      await webSSE.startStream('https://dry-frog-85.loca.lt/api/comorbidity/web', { patient_id: patientId });
+      await webSSE.startStream(`${BASE_API}/comorbidity/web`, { patient_id: patientId });
     } catch (err) {
       console.error("Failed to load comorbidity web:", err);
     }
@@ -132,7 +133,7 @@ const ComorbidityWeb = () => {
         setActiveNode(d);
         nodeSSE.setData('');
         try {
-          await nodeSSE.startStream('https://dry-frog-85.loca.lt/api/query', {
+          await nodeSSE.startStream(`${BASE_API}/query`, {
             patient_id: currentPatient.id,
             query: `Describe the role of condition \"${d.condition}\" (ICD: ${d.icd_code}) for this patient. Give a 3-sentence clinical breakdown explaining its severity (${d.severity}) and potential complications.`
           });
@@ -208,7 +209,7 @@ const ComorbidityWeb = () => {
     try {
       opinionSSE.setData('');
       opinionSSE.setLoading(true);
-      await opinionSSE.startStream('https://dry-frog-85.loca.lt/api/second-opinion', {
+      await opinionSSE.startStream(`${BASE_API}/second-opinion`, {
         patient_id: currentPatient.id,
         hypothesis: hypothesis
       });

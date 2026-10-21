@@ -47,7 +47,7 @@ const TrialMatcherPage = () => {
           </h2>
           <p className="text-sm md:text-base text-gray-500 max-w-4xl leading-relaxed">
             Scan and evaluate matching active clinical trials from ClinicalTrials.gov. Patient clinical indicators, 
-            biometrics, and history are cross-referenced using Gemini to check eligibility and identify disqualifiers.
+            biometrics, and history are cross-referenced using AI (Groq) to check eligibility and identify disqualifiers.
           </p>
         </div>
 

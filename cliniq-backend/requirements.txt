@@ -1,10 +1,11 @@
 fastapi
 uvicorn[standard]
-google-generativeai
+httpx
 python-dotenv
 pillow
 pydantic
 python-multipart
-httpx
 matplotlib
 reportlab
+pypdfium2
+boto3

@@ -1,30 +1,16 @@
-import google.generativeai as genai
 import os
 import json
-from PIL import Image
-import io
-from dotenv import load_dotenv
-
-# Load environment variables from the backend root
-env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
-load_dotenv(env_path)
-
-# Ensure API key is configured
-api_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
-genai.configure(api_key=api_key)
-
-# Use a highly capable vision model for accurate medical identification
-MODEL_NAME = "gemini-2.5-flash"
+from services import llm
 
 def analyze_pill_images(front_image_bytes, back_image_bytes):
     """
-    Takes the bytes of two pill images (front and back), sends them to Gemini 1.5 Flash, 
+    Takes the bytes of two pill images (front and back), sends them to the vision model, 
     and returns a structured JSON string with the requested pill details.
     """
     
     # Check if we have an API key. If not, return a mock response for now
-    if not os.environ.get("GEMINI_API_KEY"):
-        print("WARNING: GEMINI_API_KEY not found in environment. Returning mock data.")
+    if not os.environ.get("GROQ_API_KEY"):
+        print("WARNING: GROQ_API_KEY not found in environment. Returning mock data.")
         return json.dumps({
             "name": "Mock Tylenol (Acetaminophen)",
             "expiry_date": "2026-10-01",
@@ -36,12 +22,6 @@ def analyze_pill_images(front_image_bytes, back_image_bytes):
         })
     
     try:
-        model = genai.GenerativeModel(MODEL_NAME)
-        
-        # Load images
-        front_img = Image.open(io.BytesIO(front_image_bytes))
-        back_img = Image.open(io.BytesIO(back_image_bytes))
-        
         prompt = """
         You are an expert pharmacist and medical AI assistant with absolute precision.
         I have provided two images of a tablet/pill: one of the front side and one of the back side.
@@ -75,14 +55,7 @@ def analyze_pill_images(front_image_bytes, back_image_bytes):
         """
         
         # Lowering temperature significantly to ensure deterministic, highly accurate factual output
-        generation_config = genai.types.GenerationConfig(temperature=0.1)
-        
-        response = model.generate_content(
-            [prompt, front_img, back_img],
-            generation_config=generation_config
-        )
-        
-        text_response = response.text.strip()
+        text_response = llm.generate(prompt, images=[front_image_bytes, back_image_bytes], temperature=0.1).strip()
         
         # Strip potential markdown code blocks like ```json ... ```
         if text_response.startswith('```'):
@@ -95,7 +68,7 @@ def analyze_pill_images(front_image_bytes, back_image_bytes):
             
         return text_response
     except Exception as e:
-        print(f"Error calling Gemini API: {e}")
+        print(f"Error calling vision model: {e}")
         return json.dumps({
             "error": "Failed to analyze pill images.",
             "details": str(e)

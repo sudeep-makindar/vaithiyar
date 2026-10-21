@@ -5,1280 +5,3695 @@
       "name": "Arjun Mehta",
       "age": 58,
       "sex": "Male",
-      "dob": "12 Mar 1967",
-      "diagnosis": [
-        "Paroxysmal Atrial Fibrillatio",
-        "(ICD-10: I48.11)",
-        "Type 2 Diabetes Mellitus with hyperglycaemia (ICD-10: E11.65)",
-        "Esse",
-        "tial Hyperte",
-        "sio",
-        "(u",
-        "co",
-        "trolled) (ICD-10: I10)",
-        "Familial Hypercholesterolaemia (Pure) (ICD-10: E78.01)."
-      ],
-      "doctor": "Dr. Priya Nair",
+      "dob": "12 Mar 1968",
+      "doctor": "Dr. Vedanth",
       "ward": "Endocrinology",
-      "riskScore": 78,
-      "adherenceScore": 61,
+      "adherenceScore": 64,
+      "adherenceCalendar": [
+        true,
+        false,
+        true,
+        true,
+        false,
+        true,
+        false
+      ],
+      "diagnosis": [
+        "Type 2 Diabetes Mellitus with hyperglycaemia (E11.65)",
+        "Chronic Kidney Disease, stage 3a (N18.31)",
+        "Essential Hypertension (I10)",
+        "Paroxysmal Atrial Fibrillation (I48.0)"
+      ],
       "medications": [
         {
-          "name": "1. Apixaban 5 mg, Twice D",
-          "dose": "aily, Duration: Ongoing (Take with or without food. Do NOT combine with NSAIDs, Aspirin, or other anticoagulants. Avoid grapefruit).",
-          "freq": "As Directed",
-          "color": "#1a6bff",
+          "name": "Metformin",
+          "dose": "1000 mg",
+          "freq": "Twice daily",
+          "color": "#e5e7eb",
+          "shape": "Oblong",
+          "markings": "G 1000"
+        },
+        {
+          "name": "Empagliflozin",
+          "dose": "10 mg",
+          "freq": "Once daily",
+          "color": "#f59e0b",
+          "shape": "Oval",
+          "markings": "S 10"
+        },
+        {
+          "name": "Telmisartan",
+          "dose": "40 mg",
+          "freq": "Once daily",
+          "color": "#e5e7eb",
+          "shape": "Oval",
+          "markings": "T 40"
+        },
+        {
+          "name": "Apixaban",
+          "dose": "5 mg",
+          "freq": "Twice daily",
+          "color": "#ec4899",
+          "shape": "Oval",
+          "markings": "894 5"
+        },
+        {
+          "name": "Atorvastatin",
+          "dose": "40 mg",
+          "freq": "At bedtime",
+          "color": "#e5e7eb",
           "shape": "Round",
+          "markings": "A 40"
+        }
+      ],
+      "labs": {
+        "HbA1c": [
+          {
+            "val": 7.1
+          },
+          {
+            "val": 7.0
+          },
+          {
+            "val": 7.2
+          },
+          {
+            "val": 7.2
+          },
+          {
+            "val": 7.1
+          },
+          {
+            "val": 7.2
+          },
+          {
+            "val": 7.2
+          },
+          {
+            "val": 7.3
+          },
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.3
+          },
+          {
+            "val": 7.3
+          },
+          {
+            "val": 7.7
+          },
+          {
+            "val": 7.6
+          },
+          {
+            "val": 7.8
+          },
+          {
+            "val": 7.7
+          },
+          {
+            "val": 8.0
+          },
+          {
+            "val": 8.2
+          },
+          {
+            "val": 8.2
+          },
+          {
+            "val": 8.6
+          },
+          {
+            "val": 8.7
+          },
+          {
+            "val": 8.7
+          },
+          {
+            "val": 8.8
+          },
+          {
+            "val": 9.2
+          },
+          {
+            "val": 9.4
+          }
+        ],
+        "Glucose": [
+          {
+            "val": 138
+          },
+          {
+            "val": 149
+          },
+          {
+            "val": 149
+          },
+          {
+            "val": 128
+          },
+          {
+            "val": 130
+          },
+          {
+            "val": 149
+          },
+          {
+            "val": 148
+          },
+          {
+            "val": 147
+          },
+          {
+            "val": 141
+          },
+          {
+            "val": 150
+          },
+          {
+            "val": 152
+          },
+          {
+            "val": 155
+          },
+          {
+            "val": 147
+          },
+          {
+            "val": 157
+          },
+          {
+            "val": 160
+          },
+          {
+            "val": 172
+          },
+          {
+            "val": 183
+          },
+          {
+            "val": 187
+          },
+          {
+            "val": 182
+          },
+          {
+            "val": 185
+          },
+          {
+            "val": 187
+          },
+          {
+            "val": 187
+          },
+          {
+            "val": 194
+          },
+          {
+            "val": 212
+          }
+        ],
+        "Creatinine": [
+          {
+            "val": 1.0
+          },
+          {
+            "val": 1.0
+          },
+          {
+            "val": 1.07
+          },
+          {
+            "val": 1.08
+          },
+          {
+            "val": 1.13
+          },
+          {
+            "val": 1.16
+          },
+          {
+            "val": 1.14
+          },
+          {
+            "val": 1.16
+          },
+          {
+            "val": 1.28
+          },
+          {
+            "val": 1.25
+          },
+          {
+            "val": 1.28
+          },
+          {
+            "val": 1.38
+          },
+          {
+            "val": 1.36
+          },
+          {
+            "val": 1.43
+          },
+          {
+            "val": 1.42
+          },
+          {
+            "val": 1.47
+          },
+          {
+            "val": 1.45
+          },
+          {
+            "val": 1.53
+          },
+          {
+            "val": 1.58
+          },
+          {
+            "val": 1.58
+          },
+          {
+            "val": 1.63
+          },
+          {
+            "val": 1.66
+          },
+          {
+            "val": 1.63
+          },
+          {
+            "val": 1.7
+          }
+        ],
+        "eGFR": [
+          {
+            "val": 82
+          },
+          {
+            "val": 79
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 73
+          },
+          {
+            "val": 71
+          },
+          {
+            "val": 71
+          },
+          {
+            "val": 73
+          },
+          {
+            "val": 71
+          },
+          {
+            "val": 69
+          },
+          {
+            "val": 64
+          },
+          {
+            "val": 64
+          },
+          {
+            "val": 61
+          },
+          {
+            "val": 59
+          },
+          {
+            "val": 57
+          },
+          {
+            "val": 56
+          },
+          {
+            "val": 58
+          },
+          {
+            "val": 56
+          },
+          {
+            "val": 54
+          },
+          {
+            "val": 52
+          },
+          {
+            "val": 47
+          },
+          {
+            "val": 46
+          },
+          {
+            "val": 46
+          },
+          {
+            "val": 44
+          }
+        ],
+        "Potassium": [
+          {
+            "val": 4.3
+          },
+          {
+            "val": 4.4
+          },
+          {
+            "val": 4.4
+          },
+          {
+            "val": 4.5
+          },
+          {
+            "val": 4.5
+          },
+          {
+            "val": 4.5
+          },
+          {
+            "val": 4.6
+          },
+          {
+            "val": 4.4
+          },
+          {
+            "val": 4.6
+          },
+          {
+            "val": 4.7
+          },
+          {
+            "val": 4.7
+          },
+          {
+            "val": 4.8
+          },
+          {
+            "val": 4.6
+          },
+          {
+            "val": 4.7
+          },
+          {
+            "val": 4.7
+          },
+          {
+            "val": 4.8
+          },
+          {
+            "val": 4.9
+          },
+          {
+            "val": 4.8
+          },
+          {
+            "val": 4.9
+          },
+          {
+            "val": 4.9
+          },
+          {
+            "val": 5.1
+          },
+          {
+            "val": 5.1
+          },
+          {
+            "val": 5.0
+          },
+          {
+            "val": 5.1
+          }
+        ],
+        "BP_Systolic": [
+          {
+            "val": 128
+          },
+          {
+            "val": 132
+          },
+          {
+            "val": 133
+          },
+          {
+            "val": 130
+          },
+          {
+            "val": 129
+          },
+          {
+            "val": 127
+          },
+          {
+            "val": 134
+          },
+          {
+            "val": 133
+          },
+          {
+            "val": 137
+          },
+          {
+            "val": 134
+          },
+          {
+            "val": 139
+          },
+          {
+            "val": 134
+          },
+          {
+            "val": 140
+          },
+          {
+            "val": 140
+          },
+          {
+            "val": 138
+          },
+          {
+            "val": 140
+          },
+          {
+            "val": 142
+          },
+          {
+            "val": 138
+          },
+          {
+            "val": 143
+          },
+          {
+            "val": 146
+          },
+          {
+            "val": 141
+          },
+          {
+            "val": 147
+          },
+          {
+            "val": 147
+          },
+          {
+            "val": 146
+          }
+        ],
+        "LDL": [
+          {
+            "val": 124
+          },
+          {
+            "val": 119
+          },
+          {
+            "val": 114
+          },
+          {
+            "val": 118
+          },
+          {
+            "val": 108
+          },
+          {
+            "val": 112
+          },
+          {
+            "val": 108
+          },
+          {
+            "val": 102
+          },
+          {
+            "val": 106
+          },
+          {
+            "val": 99
+          },
+          {
+            "val": 102
+          },
+          {
+            "val": 96
+          },
+          {
+            "val": 96
+          },
+          {
+            "val": 99
+          },
+          {
+            "val": 103
+          },
+          {
+            "val": 93
+          },
+          {
+            "val": 94
+          },
+          {
+            "val": 99
+          },
+          {
+            "val": 102
+          },
+          {
+            "val": 97
+          },
+          {
+            "val": 95
+          },
+          {
+            "val": 102
+          },
+          {
+            "val": 91
+          },
+          {
+            "val": 96
+          }
+        ]
+      },
+      "consultBrief": "Glycaemic control deteriorating (HbA1c 9.4%) with declining eGFR. Review Metformin dose for renal function, reinforce Apixaban adherence (2 missed evening doses this week).",
+      "demo": true,
+      "clinicalPatterns": [
+        {
+          "type": "Worsening Trend",
+          "description": "HbA1c 9.4 % (ref 4.0\u20135.6 %), rising from 8.2 over 6 readings.",
+          "severity": "HIGH",
+          "source": "lab_engine",
+          "lab": "HbA1c",
+          "minutes_ago": 40
+        },
+        {
+          "type": "Worsening Trend",
+          "description": "eGFR 44 mL/min (ref > 90 mL/min), falling from 56 over 6 readings.",
+          "severity": "HIGH",
+          "source": "lab_engine",
+          "lab": "eGFR",
+          "minutes_ago": 65
+        },
+        {
+          "type": "Worsening Trend",
+          "description": "Glucose 212 mg/dL (ref 70\u2013140 mg/dL), rising from 187 over 6 readings.",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "Glucose",
+          "minutes_ago": 233
+        },
+        {
+          "type": "Lab Alert",
+          "description": "Creatinine 1.7 mg/dL (ref 0.6\u20131.2 mg/dL), rising from 1.53 over 6 readings.",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "Creatinine",
+          "minutes_ago": 836
+        },
+        {
+          "type": "Worsening Trend",
+          "description": "BP_Systolic 146 mmHg (ref 90\u2013130 mmHg), rising from 138 over 6 readings.",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "BP_Systolic",
+          "minutes_ago": 463
+        },
+        {
+          "type": "Lab Alert",
+          "description": "Potassium 5.1 mmol/L (ref 3.5\u20135.0 mmol/L), rising from 4.8 over 6 readings.",
+          "severity": "LOW",
+          "source": "lab_engine",
+          "lab": "Potassium",
+          "minutes_ago": 1130
+        },
+        {
+          "type": "Missed Dose",
+          "description": "Apixaban 5 mg evening dose missed on 2 of the last 7 days (PillGuard).",
+          "severity": "HIGH",
+          "minutes_ago": 38
+        },
+        {
+          "type": "Patient Voice Report",
+          "description": "Reported in Hindi: fatigue and swelling in both feet since 3 days.",
+          "severity": "MEDIUM",
+          "minutes_ago": 142
+        },
+        {
+          "type": "Data Ingest",
+          "description": "Discharge Summary processed by Intake AI: 4 diagnoses, 5 medications, 3 vitals extracted.",
+          "severity": "INFO",
+          "minutes_ago": 2950
+        }
+      ],
+      "riskScore": 82,
+      "bodyFlags": [
+        "Heart",
+        "Kidney"
+      ]
+    },
+    {
+      "id": "P-00399",
+      "name": "Saraswathi Krishnan",
+      "age": 72,
+      "sex": "Female",
+      "dob": "04 Aug 1954",
+      "doctor": "Dr. Vedanth",
+      "ward": "Cardiology",
+      "adherenceScore": 78,
+      "adherenceCalendar": [
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        false
+      ],
+      "diagnosis": [
+        "Heart Failure with reduced Ejection Fraction, EF 32% (I50.22)",
+        "Chronic Kidney Disease, stage 3b (N18.32)",
+        "Type 2 Diabetes Mellitus (E11.9)"
+      ],
+      "medications": [
+        {
+          "name": "Sacubitril/Valsartan",
+          "dose": "49/51 mg",
+          "freq": "Twice daily",
+          "color": "#8b5cf6",
+          "shape": "Oval",
+          "markings": "NVR LZ"
+        },
+        {
+          "name": "Furosemide",
+          "dose": "40 mg",
+          "freq": "Once daily",
+          "color": "#e5e7eb",
+          "shape": "Round",
+          "markings": "F 40"
+        },
+        {
+          "name": "Bisoprolol",
+          "dose": "5 mg",
+          "freq": "Once daily",
+          "color": "#f59e0b",
+          "shape": "Heart",
+          "markings": "B 5"
+        },
+        {
+          "name": "Spironolactone",
+          "dose": "25 mg",
+          "freq": "Once daily",
+          "color": "#f97316",
+          "shape": "Round",
+          "markings": "SY 25"
+        },
+        {
+          "name": "Linagliptin",
+          "dose": "5 mg",
+          "freq": "Once daily",
+          "color": "#ef4444",
+          "shape": "Round",
+          "markings": "D5"
+        }
+      ],
+      "labs": {
+        "BNP": [
+          {
+            "val": 320
+          },
+          {
+            "val": 317
+          },
+          {
+            "val": 327
+          },
+          {
+            "val": 360
+          },
+          {
+            "val": 329
+          },
+          {
+            "val": 340
+          },
+          {
+            "val": 356
+          },
+          {
+            "val": 336
+          },
+          {
+            "val": 376
+          },
+          {
+            "val": 401
+          },
+          {
+            "val": 433
+          },
+          {
+            "val": 398
+          },
+          {
+            "val": 438
+          },
+          {
+            "val": 447
+          },
+          {
+            "val": 533
+          },
+          {
+            "val": 554
+          },
+          {
+            "val": 535
+          },
+          {
+            "val": 647
+          },
+          {
+            "val": 684
+          },
+          {
+            "val": 700
+          },
+          {
+            "val": 741
+          },
+          {
+            "val": 751
+          },
+          {
+            "val": 789
+          },
+          {
+            "val": 880
+          }
+        ],
+        "Creatinine": [
+          {
+            "val": 1.4
+          },
+          {
+            "val": 1.4
+          },
+          {
+            "val": 1.42
+          },
+          {
+            "val": 1.43
+          },
+          {
+            "val": 1.37
+          },
+          {
+            "val": 1.37
+          },
+          {
+            "val": 1.43
+          },
+          {
+            "val": 1.43
+          },
+          {
+            "val": 1.52
+          },
+          {
+            "val": 1.52
+          },
+          {
+            "val": 1.54
+          },
+          {
+            "val": 1.56
+          },
+          {
+            "val": 1.61
+          },
+          {
+            "val": 1.59
+          },
+          {
+            "val": 1.66
+          },
+          {
+            "val": 1.67
+          },
+          {
+            "val": 1.81
+          },
+          {
+            "val": 1.76
+          },
+          {
+            "val": 1.9
+          },
+          {
+            "val": 1.87
+          },
+          {
+            "val": 2.01
+          },
+          {
+            "val": 2.04
+          },
+          {
+            "val": 2.11
+          },
+          {
+            "val": 2.2
+          }
+        ],
+        "eGFR": [
+          {
+            "val": 40
+          },
+          {
+            "val": 39
+          },
+          {
+            "val": 41
+          },
+          {
+            "val": 41
+          },
+          {
+            "val": 41
+          },
+          {
+            "val": 38
+          },
+          {
+            "val": 38
+          },
+          {
+            "val": 37
+          },
+          {
+            "val": 37
+          },
+          {
+            "val": 39
+          },
+          {
+            "val": 36
+          },
+          {
+            "val": 37
+          },
+          {
+            "val": 35
+          },
+          {
+            "val": 35
+          },
+          {
+            "val": 34
+          },
+          {
+            "val": 35
+          },
+          {
+            "val": 33
+          },
+          {
+            "val": 30
+          },
+          {
+            "val": 30
+          },
+          {
+            "val": 28
+          },
+          {
+            "val": 30
+          },
+          {
+            "val": 28
+          },
+          {
+            "val": 27
+          },
+          {
+            "val": 24
+          }
+        ],
+        "Potassium": [
+          {
+            "val": 4.4
+          },
+          {
+            "val": 4.3
+          },
+          {
+            "val": 4.4
+          },
+          {
+            "val": 4.4
+          },
+          {
+            "val": 4.5
+          },
+          {
+            "val": 4.4
+          },
+          {
+            "val": 4.4
+          },
+          {
+            "val": 4.5
+          },
+          {
+            "val": 4.5
+          },
+          {
+            "val": 4.5
+          },
+          {
+            "val": 4.6
+          },
+          {
+            "val": 4.6
+          },
+          {
+            "val": 4.7
+          },
+          {
+            "val": 4.7
+          },
+          {
+            "val": 4.7
+          },
+          {
+            "val": 4.9
+          },
+          {
+            "val": 4.9
+          },
+          {
+            "val": 5.0
+          },
+          {
+            "val": 5.2
+          },
+          {
+            "val": 5.2
+          },
+          {
+            "val": 5.2
+          },
+          {
+            "val": 5.4
+          },
+          {
+            "val": 5.5
+          },
+          {
+            "val": 5.6
+          }
+        ],
+        "BP_Systolic": [
+          {
+            "val": 138
+          },
+          {
+            "val": 142
+          },
+          {
+            "val": 130
+          },
+          {
+            "val": 137
+          },
+          {
+            "val": 129
+          },
+          {
+            "val": 138
+          },
+          {
+            "val": 125
+          },
+          {
+            "val": 135
+          },
+          {
+            "val": 131
+          },
+          {
+            "val": 132
+          },
+          {
+            "val": 133
+          },
+          {
+            "val": 122
+          },
+          {
+            "val": 122
+          },
+          {
+            "val": 126
+          },
+          {
+            "val": 120
+          },
+          {
+            "val": 118
+          },
+          {
+            "val": 117
+          },
+          {
+            "val": 123
+          },
+          {
+            "val": 122
+          },
+          {
+            "val": 120
+          },
+          {
+            "val": 112
+          },
+          {
+            "val": 119
+          },
+          {
+            "val": 113
+          },
+          {
+            "val": 112
+          }
+        ],
+        "HeartRate": [
+          {
+            "val": 76
+          },
+          {
+            "val": 75
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 78
+          },
+          {
+            "val": 75
+          },
+          {
+            "val": 79
+          },
+          {
+            "val": 74
+          },
+          {
+            "val": 77
+          },
+          {
+            "val": 78
+          },
+          {
+            "val": 77
+          },
+          {
+            "val": 83
+          },
+          {
+            "val": 80
+          },
+          {
+            "val": 85
+          },
+          {
+            "val": 87
+          },
+          {
+            "val": 82
+          },
+          {
+            "val": 88
+          },
+          {
+            "val": 89
+          },
+          {
+            "val": 89
+          },
+          {
+            "val": 85
+          },
+          {
+            "val": 90
+          },
+          {
+            "val": 92
+          }
+        ],
+        "HbA1c": [
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.3
+          },
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.3
+          },
+          {
+            "val": 7.1
+          },
+          {
+            "val": 7.1
+          },
+          {
+            "val": 7.2
+          },
+          {
+            "val": 7.3
+          },
+          {
+            "val": 7.1
+          },
+          {
+            "val": 7.2
+          },
+          {
+            "val": 7.1
+          },
+          {
+            "val": 7.2
+          },
+          {
+            "val": 7.3
+          },
+          {
+            "val": 7.1
+          },
+          {
+            "val": 7.2
+          },
+          {
+            "val": 6.9
+          },
+          {
+            "val": 7.1
+          },
+          {
+            "val": 7.1
+          },
+          {
+            "val": 6.9
+          },
+          {
+            "val": 7.0
+          }
+        ]
+      },
+      "consultBrief": "Signs of decompensation: BNP 880 pg/mL, weight gain 2.1 kg in 3 days, K+ 5.6 on Spironolactone + ARNI. Consider diuretic up-titration and potassium review today.",
+      "demo": true,
+      "clinicalPatterns": [
+        {
+          "type": "Worsening Trend",
+          "description": "BNP 880 pg/mL (ref < 100 pg/mL), rising from 647 over 6 readings.",
+          "severity": "HIGH",
+          "source": "lab_engine",
+          "lab": "BNP",
+          "minutes_ago": 96
+        },
+        {
+          "type": "Lab Alert",
+          "description": "eGFR 24 mL/min (ref > 90 mL/min), falling from 30 over 6 readings.",
+          "severity": "HIGH",
+          "source": "lab_engine",
+          "lab": "eGFR",
+          "minutes_ago": 73
+        },
+        {
+          "type": "Worsening Trend",
+          "description": "Creatinine 2.2 mg/dL (ref 0.6\u20131.2 mg/dL), rising from 1.76 over 6 readings.",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "Creatinine",
+          "minutes_ago": 691
+        },
+        {
+          "type": "Worsening Trend",
+          "description": "Potassium 5.6 mmol/L (ref 3.5\u20135.0 mmol/L), rising from 5.0 over 6 readings.",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "Potassium",
+          "minutes_ago": 509
+        },
+        {
+          "type": "Lab Alert",
+          "description": "HbA1c 7.0 % (ref 4.0\u20135.6 %), falling from 7.1 over 6 readings.",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "HbA1c",
+          "minutes_ago": 787
+        },
+        {
+          "type": "Weight Gain Alert",
+          "description": "Home scale: +2.1 kg in 3 days. Possible fluid overload.",
+          "severity": "HIGH",
+          "minutes_ago": 22
+        },
+        {
+          "type": "Data Ingest",
+          "description": "Echocardiogram report processed by Intake AI: EF 32%, moderate MR, 2 diagnoses confirmed.",
+          "severity": "INFO",
+          "minutes_ago": 1460
+        }
+      ],
+      "riskScore": 81,
+      "bodyFlags": [
+        "Heart",
+        "Kidney"
+      ]
+    },
+    {
+      "id": "P-00805",
+      "name": "Venkatesh Rao",
+      "age": 69,
+      "sex": "Male",
+      "dob": "19 Jan 1957",
+      "doctor": "Dr. Vedanth",
+      "ward": "Cardiology",
+      "adherenceScore": 72,
+      "adherenceCalendar": [
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        true
+      ],
+      "diagnosis": [
+        "Coronary Artery Disease, post-PCI to LAD (I25.10)",
+        "Essential Hypertension (I10)",
+        "Mixed Hyperlipidaemia (E78.2)"
+      ],
+      "medications": [
+        {
+          "name": "Aspirin",
+          "dose": "75 mg",
+          "freq": "Once daily",
+          "color": "#e5e7eb",
+          "shape": "Round",
+          "markings": "75"
+        },
+        {
+          "name": "Clopidogrel",
+          "dose": "75 mg",
+          "freq": "Once daily",
+          "color": "#ec4899",
+          "shape": "Round",
+          "markings": "C 75"
+        },
+        {
+          "name": "Atorvastatin",
+          "dose": "80 mg",
+          "freq": "At bedtime",
+          "color": "#e5e7eb",
+          "shape": "Oval",
+          "markings": "A 80"
+        },
+        {
+          "name": "Metoprolol Succinate",
+          "dose": "50 mg",
+          "freq": "Once daily",
+          "color": "#e5e7eb",
+          "shape": "Round",
+          "markings": "M 50"
+        },
+        {
+          "name": "Ramipril",
+          "dose": "5 mg",
+          "freq": "Once daily",
+          "color": "#ef4444",
+          "shape": "Capsule",
+          "markings": "R 5"
+        }
+      ],
+      "labs": {
+        "LDL": [
+          {
+            "val": 142
+          },
+          {
+            "val": 131
+          },
+          {
+            "val": 131
+          },
+          {
+            "val": 125
+          },
+          {
+            "val": 117
+          },
+          {
+            "val": 109
+          },
+          {
+            "val": 112
+          },
+          {
+            "val": 108
+          },
+          {
+            "val": 100
+          },
+          {
+            "val": 97
+          },
+          {
+            "val": 90
+          },
+          {
+            "val": 85
+          },
+          {
+            "val": 87
+          },
+          {
+            "val": 87
+          },
+          {
+            "val": 79
+          },
+          {
+            "val": 86
+          },
+          {
+            "val": 78
+          },
+          {
+            "val": 77
+          },
+          {
+            "val": 74
+          },
+          {
+            "val": 85
+          },
+          {
+            "val": 81
+          },
+          {
+            "val": 83
+          },
+          {
+            "val": 79
+          },
+          {
+            "val": 78
+          }
+        ],
+        "BP_Systolic": [
+          {
+            "val": 146
+          },
+          {
+            "val": 148
+          },
+          {
+            "val": 138
+          },
+          {
+            "val": 135
+          },
+          {
+            "val": 143
+          },
+          {
+            "val": 134
+          },
+          {
+            "val": 132
+          },
+          {
+            "val": 136
+          },
+          {
+            "val": 131
+          },
+          {
+            "val": 136
+          },
+          {
+            "val": 128
+          },
+          {
+            "val": 135
+          },
+          {
+            "val": 127
+          },
+          {
+            "val": 130
+          },
+          {
+            "val": 132
+          },
+          {
+            "val": 129
+          },
+          {
+            "val": 131
+          },
+          {
+            "val": 129
+          },
+          {
+            "val": 122
+          },
+          {
+            "val": 130
+          },
+          {
+            "val": 127
+          },
+          {
+            "val": 124
+          },
+          {
+            "val": 123
+          },
+          {
+            "val": 126
+          }
+        ],
+        "HeartRate": [
+          {
+            "val": 78
+          },
+          {
+            "val": 80
+          },
+          {
+            "val": 79
+          },
+          {
+            "val": 79
+          },
+          {
+            "val": 73
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 74
+          },
+          {
+            "val": 74
+          },
+          {
+            "val": 71
+          },
+          {
+            "val": 71
+          },
+          {
+            "val": 72
+          },
+          {
+            "val": 70
+          },
+          {
+            "val": 70
+          },
+          {
+            "val": 67
+          },
+          {
+            "val": 67
+          },
+          {
+            "val": 70
+          },
+          {
+            "val": 68
+          },
+          {
+            "val": 68
+          },
+          {
+            "val": 68
+          },
+          {
+            "val": 66
+          },
+          {
+            "val": 63
+          },
+          {
+            "val": 67
+          },
+          {
+            "val": 65
+          },
+          {
+            "val": 64
+          }
+        ],
+        "Creatinine": [
+          {
+            "val": 1.0
+          },
+          {
+            "val": 1.03
+          },
+          {
+            "val": 1.04
+          },
+          {
+            "val": 0.98
+          },
+          {
+            "val": 1.07
+          },
+          {
+            "val": 0.99
+          },
+          {
+            "val": 1.04
+          },
+          {
+            "val": 0.99
+          },
+          {
+            "val": 1.06
+          },
+          {
+            "val": 1.0
+          },
+          {
+            "val": 1.06
+          },
+          {
+            "val": 1.07
+          },
+          {
+            "val": 1.08
+          },
+          {
+            "val": 1.05
+          },
+          {
+            "val": 1.1
+          },
+          {
+            "val": 1.11
+          },
+          {
+            "val": 1.03
+          },
+          {
+            "val": 1.08
+          },
+          {
+            "val": 1.12
+          },
+          {
+            "val": 1.11
+          },
+          {
+            "val": 1.08
+          },
+          {
+            "val": 1.07
+          },
+          {
+            "val": 1.14
+          },
+          {
+            "val": 1.1
+          }
+        ]
+      },
+      "consultBrief": "LDL at target on high-intensity statin. Dual antiplatelet therapy interrupted for 2 days, high stent thrombosis risk within 12 months of PCI: counsel urgently.",
+      "demo": true,
+      "clinicalPatterns": [
+        {
+          "type": "Pill Mismatch",
+          "description": "PillGuard: Clopidogrel not confirmed for 2 consecutive days post-PCI.",
+          "severity": "HIGH",
+          "minutes_ago": 75
+        }
+      ],
+      "riskScore": 50,
+      "bodyFlags": []
+    },
+    {
+      "id": "P-00523",
+      "name": "Lakshmi Narayanan",
+      "age": 67,
+      "sex": "Female",
+      "dob": "23 Nov 1958",
+      "doctor": "Dr. Vedanth",
+      "ward": "Pulmonology",
+      "adherenceScore": 82,
+      "adherenceCalendar": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true
+      ],
+      "diagnosis": [
+        "Chronic Obstructive Pulmonary Disease, GOLD 3 (J44.1)",
+        "Essential Hypertension (I10)"
+      ],
+      "medications": [
+        {
+          "name": "Tiotropium",
+          "dose": "18 mcg",
+          "freq": "Once daily",
+          "color": "#10b981",
+          "shape": "Capsule",
+          "markings": "TI 01"
+        },
+        {
+          "name": "Budesonide/Formoterol",
+          "dose": "200/6 mcg",
+          "freq": "Twice daily",
+          "color": "#ef4444",
+          "shape": "Inhaler",
           "markings": "-"
         },
         {
-          "name": "2. Metoprolol Succinate X",
-          "dose": "R 100 mg, Once Daily (morning), Duration: 90 Days (Do not crush, chew or split. Do NOT stop abruptly).",
-          "freq": "As Directed",
+          "name": "Losartan",
+          "dose": "50 mg",
+          "freq": "Once daily",
+          "color": "#e5e7eb",
+          "shape": "Oval",
+          "markings": "L 50"
+        }
+      ],
+      "labs": {
+        "FEV1": [
+          {
+            "val": 54
+          },
+          {
+            "val": 52
+          },
+          {
+            "val": 52
+          },
+          {
+            "val": 52
+          },
+          {
+            "val": 53
+          },
+          {
+            "val": 50
+          },
+          {
+            "val": 50
+          },
+          {
+            "val": 50
+          },
+          {
+            "val": 52
+          },
+          {
+            "val": 49
+          },
+          {
+            "val": 51
+          },
+          {
+            "val": 50
+          },
+          {
+            "val": 47
+          },
+          {
+            "val": 45
+          },
+          {
+            "val": 42
+          },
+          {
+            "val": 43
+          },
+          {
+            "val": 48
+          },
+          {
+            "val": 45
+          },
+          {
+            "val": 44
+          },
+          {
+            "val": 47
+          },
+          {
+            "val": 45
+          },
+          {
+            "val": 44
+          },
+          {
+            "val": 44
+          },
+          {
+            "val": 44
+          }
+        ],
+        "SpO2": [
+          {
+            "val": 95
+          },
+          {
+            "val": 94
+          },
+          {
+            "val": 94
+          },
+          {
+            "val": 94
+          },
+          {
+            "val": 95
+          },
+          {
+            "val": 94
+          },
+          {
+            "val": 94
+          },
+          {
+            "val": 93
+          },
+          {
+            "val": 94
+          },
+          {
+            "val": 94
+          },
+          {
+            "val": 93
+          },
+          {
+            "val": 94
+          },
+          {
+            "val": 94
+          },
+          {
+            "val": 93
+          },
+          {
+            "val": 92
+          },
+          {
+            "val": 93
+          },
+          {
+            "val": 92
+          },
+          {
+            "val": 91
+          },
+          {
+            "val": 92
+          },
+          {
+            "val": 92
+          },
+          {
+            "val": 92
+          },
+          {
+            "val": 92
+          },
+          {
+            "val": 91
+          },
+          {
+            "val": 91
+          }
+        ],
+        "BP_Systolic": [
+          {
+            "val": 132
+          },
+          {
+            "val": 133
+          },
+          {
+            "val": 134
+          },
+          {
+            "val": 136
+          },
+          {
+            "val": 131
+          },
+          {
+            "val": 135
+          },
+          {
+            "val": 137
+          },
+          {
+            "val": 138
+          },
+          {
+            "val": 131
+          },
+          {
+            "val": 136
+          },
+          {
+            "val": 136
+          },
+          {
+            "val": 135
+          },
+          {
+            "val": 140
+          },
+          {
+            "val": 136
+          },
+          {
+            "val": 135
+          },
+          {
+            "val": 140
+          },
+          {
+            "val": 138
+          },
+          {
+            "val": 134
+          },
+          {
+            "val": 135
+          },
+          {
+            "val": 137
+          },
+          {
+            "val": 133
+          },
+          {
+            "val": 139
+          },
+          {
+            "val": 140
+          },
+          {
+            "val": 138
+          }
+        ],
+        "HeartRate": [
+          {
+            "val": 82
+          },
+          {
+            "val": 83
+          },
+          {
+            "val": 84
+          },
+          {
+            "val": 86
+          },
+          {
+            "val": 86
+          },
+          {
+            "val": 87
+          },
+          {
+            "val": 84
+          },
+          {
+            "val": 88
+          },
+          {
+            "val": 86
+          },
+          {
+            "val": 86
+          },
+          {
+            "val": 85
+          },
+          {
+            "val": 88
+          },
+          {
+            "val": 86
+          },
+          {
+            "val": 87
+          },
+          {
+            "val": 90
+          },
+          {
+            "val": 91
+          },
+          {
+            "val": 92
+          },
+          {
+            "val": 88
+          },
+          {
+            "val": 89
+          },
+          {
+            "val": 90
+          },
+          {
+            "val": 93
+          },
+          {
+            "val": 95
+          },
+          {
+            "val": 95
+          },
+          {
+            "val": 94
+          }
+        ]
+      },
+      "consultBrief": "Progressive airflow limitation (FEV1 44% predicted), resting SpO2 91%. One exacerbation this year. Assess for pulmonary rehab and long-term oxygen.",
+      "demo": true,
+      "clinicalPatterns": [
+        {
+          "type": "Lab Alert",
+          "description": "FEV1 44 % pred (ref > 80 % pred), falling from 45 over 6 readings.",
+          "severity": "HIGH",
+          "source": "lab_engine",
+          "lab": "FEV1",
+          "minutes_ago": 54
+        },
+        {
+          "type": "Lab Alert",
+          "description": "SpO2 91 % (ref 95\u2013100 %).",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "SpO2",
+          "minutes_ago": 167
+        },
+        {
+          "type": "Lab Alert",
+          "description": "BP_Systolic 138 mmHg (ref 90\u2013130 mmHg), rising from 134 over 6 readings.",
+          "severity": "LOW",
+          "source": "lab_engine",
+          "lab": "BP_Systolic",
+          "minutes_ago": 399
+        },
+        {
+          "type": "Patient Voice Report",
+          "description": "Reported in Tamil: breathlessness while climbing stairs, worse at night.",
+          "severity": "MEDIUM",
+          "minutes_ago": 262
+        }
+      ],
+      "riskScore": 66,
+      "bodyFlags": [
+        "Heart",
+        "Lungs"
+      ]
+    },
+    {
+      "id": "P-00912",
+      "name": "Fatima Sheikh",
+      "age": 54,
+      "sex": "Female",
+      "dob": "07 Jun 1972",
+      "doctor": "Dr. Vedanth",
+      "ward": "Gastroenterology",
+      "adherenceScore": 85,
+      "adherenceCalendar": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true
+      ],
+      "diagnosis": [
+        "Non-alcoholic Fatty Liver Disease (K76.0)",
+        "Type 2 Diabetes Mellitus (E11.9)",
+        "Obesity, BMI 33 (E66.9)"
+      ],
+      "medications": [
+        {
+          "name": "Metformin",
+          "dose": "1000 mg",
+          "freq": "Twice daily",
+          "color": "#e5e7eb",
+          "shape": "Oblong",
+          "markings": "G 1000"
+        },
+        {
+          "name": "Semaglutide",
+          "dose": "0.5 mg",
+          "freq": "Weekly",
           "color": "#1a6bff",
-          "shape": "Round",
+          "shape": "Injection",
           "markings": "-"
         },
         {
-          "name": "3. Amlodipine Besylate 5 ",
-          "dose": "mg, Once Daily (morning), Duration: 90 Days (Take at fixed morning time. Monitor lower limbs for peripheral oedema. Avoid grapefruit juice).",
-          "freq": "As Directed",
-          "color": "#1a6bff",
+          "name": "Vitamin E",
+          "dose": "400 IU",
+          "freq": "Once daily",
+          "color": "#f59e0b",
+          "shape": "Capsule",
+          "markings": "-"
+        }
+      ],
+      "labs": {
+        "ALT": [
+          {
+            "val": 92
+          },
+          {
+            "val": 91
+          },
+          {
+            "val": 90
+          },
+          {
+            "val": 90
+          },
+          {
+            "val": 103
+          },
+          {
+            "val": 99
+          },
+          {
+            "val": 102
+          },
+          {
+            "val": 101
+          },
+          {
+            "val": 99
+          },
+          {
+            "val": 106
+          },
+          {
+            "val": 105
+          },
+          {
+            "val": 109
+          },
+          {
+            "val": 108
+          },
+          {
+            "val": 112
+          },
+          {
+            "val": 107
+          },
+          {
+            "val": 103
+          },
+          {
+            "val": 104
+          },
+          {
+            "val": 115
+          },
+          {
+            "val": 107
+          },
+          {
+            "val": 116
+          },
+          {
+            "val": 117
+          },
+          {
+            "val": 109
+          },
+          {
+            "val": 121
+          },
+          {
+            "val": 118
+          }
+        ],
+        "AST": [
+          {
+            "val": 64
+          },
+          {
+            "val": 66
+          },
+          {
+            "val": 60
+          },
+          {
+            "val": 64
+          },
+          {
+            "val": 64
+          },
+          {
+            "val": 71
+          },
+          {
+            "val": 71
+          },
+          {
+            "val": 74
+          },
+          {
+            "val": 65
+          },
+          {
+            "val": 70
+          },
+          {
+            "val": 66
+          },
+          {
+            "val": 69
+          },
+          {
+            "val": 73
+          },
+          {
+            "val": 68
+          },
+          {
+            "val": 71
+          },
+          {
+            "val": 77
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 73
+          },
+          {
+            "val": 78
+          },
+          {
+            "val": 82
+          },
+          {
+            "val": 73
+          },
+          {
+            "val": 83
+          },
+          {
+            "val": 83
+          },
+          {
+            "val": 81
+          }
+        ],
+        "HbA1c": [
+          {
+            "val": 8.1
+          },
+          {
+            "val": 7.9
+          },
+          {
+            "val": 8.0
+          },
+          {
+            "val": 7.8
+          },
+          {
+            "val": 7.8
+          },
+          {
+            "val": 7.8
+          },
+          {
+            "val": 7.8
+          },
+          {
+            "val": 7.7
+          },
+          {
+            "val": 7.6
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.6
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.3
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.3
+          },
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.4
+          }
+        ],
+        "Glucose": [
+          {
+            "val": 168
+          },
+          {
+            "val": 165
+          },
+          {
+            "val": 167
+          },
+          {
+            "val": 173
+          },
+          {
+            "val": 158
+          },
+          {
+            "val": 159
+          },
+          {
+            "val": 154
+          },
+          {
+            "val": 155
+          },
+          {
+            "val": 152
+          },
+          {
+            "val": 154
+          },
+          {
+            "val": 160
+          },
+          {
+            "val": 169
+          },
+          {
+            "val": 162
+          },
+          {
+            "val": 155
+          },
+          {
+            "val": 155
+          },
+          {
+            "val": 160
+          },
+          {
+            "val": 152
+          },
+          {
+            "val": 146
+          },
+          {
+            "val": 161
+          },
+          {
+            "val": 155
+          },
+          {
+            "val": 145
+          },
+          {
+            "val": 143
+          },
+          {
+            "val": 143
+          },
+          {
+            "val": 150
+          }
+        ]
+      },
+      "consultBrief": "Transaminases rising despite improving glycaemia. Fibroscan due to stage fibrosis; continue GLP-1 RA and weight-loss programme.",
+      "demo": true,
+      "clinicalPatterns": [
+        {
+          "type": "Lab Alert",
+          "description": "ALT 118 U/L (ref 7\u201356 U/L), rising from 115 over 6 readings.",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "ALT",
+          "minutes_ago": 76
+        },
+        {
+          "type": "Lab Alert",
+          "description": "AST 81 U/L (ref 10\u201340 U/L), rising from 73 over 6 readings.",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "AST",
+          "minutes_ago": 548
+        },
+        {
+          "type": "Lab Alert",
+          "description": "HbA1c 7.4 % (ref 4.0\u20135.6 %), falling from 7.5 over 6 readings.",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "HbA1c",
+          "minutes_ago": 459
+        },
+        {
+          "type": "Lab Alert",
+          "description": "Glucose 150 mg/dL (ref 70\u2013140 mg/dL), rising from 146 over 6 readings.",
+          "severity": "LOW",
+          "source": "lab_engine",
+          "lab": "Glucose",
+          "minutes_ago": 1912
+        },
+        {
+          "type": "Follow-up Due",
+          "description": "Fibroscan (liver stiffness) overdue by 3 weeks.",
+          "severity": "LOW",
+          "minutes_ago": 3100
+        }
+      ],
+      "riskScore": 52,
+      "bodyFlags": [
+        "Liver"
+      ]
+    },
+    {
+      "id": "P-00284",
+      "name": "Kavitha Rajan",
+      "age": 46,
+      "sex": "Female",
+      "dob": "15 Sep 1980",
+      "doctor": "Dr. Vedanth",
+      "ward": "Rheumatology",
+      "adherenceScore": 91,
+      "adherenceCalendar": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "diagnosis": [
+        "Rheumatoid Arthritis, seropositive (M05.79)",
+        "Iron-deficiency Anaemia (D50.9)"
+      ],
+      "medications": [
+        {
+          "name": "Methotrexate",
+          "dose": "15 mg",
+          "freq": "Weekly",
+          "color": "#f59e0b",
           "shape": "Round",
+          "markings": "M 2.5"
+        },
+        {
+          "name": "Folic Acid",
+          "dose": "5 mg",
+          "freq": "Weekly",
+          "color": "#f59e0b",
+          "shape": "Round",
+          "markings": "F 5"
+        },
+        {
+          "name": "Hydroxychloroquine",
+          "dose": "200 mg",
+          "freq": "Twice daily",
+          "color": "#e5e7eb",
+          "shape": "Oval",
+          "markings": "HCQ 200"
+        },
+        {
+          "name": "Ferrous Sulfate",
+          "dose": "200 mg",
+          "freq": "Once daily",
+          "color": "#ef4444",
+          "shape": "Round",
+          "markings": "FS"
+        }
+      ],
+      "labs": {
+        "ESR": [
+          {
+            "val": 48
+          },
+          {
+            "val": 43
+          },
+          {
+            "val": 42
+          },
+          {
+            "val": 37
+          },
+          {
+            "val": 39
+          },
+          {
+            "val": 33
+          },
+          {
+            "val": 32
+          },
+          {
+            "val": 33
+          },
+          {
+            "val": 28
+          },
+          {
+            "val": 29
+          },
+          {
+            "val": 27
+          },
+          {
+            "val": 24
+          },
+          {
+            "val": 24
+          },
+          {
+            "val": 22
+          },
+          {
+            "val": 20
+          },
+          {
+            "val": 23
+          },
+          {
+            "val": 19
+          },
+          {
+            "val": 22
+          },
+          {
+            "val": 21
+          },
+          {
+            "val": 16
+          },
+          {
+            "val": 17
+          },
+          {
+            "val": 18
+          },
+          {
+            "val": 20
+          },
+          {
+            "val": 18
+          }
+        ],
+        "CRP": [
+          {
+            "val": 24.0
+          },
+          {
+            "val": 23.5
+          },
+          {
+            "val": 19.0
+          },
+          {
+            "val": 19.4
+          },
+          {
+            "val": 17.1
+          },
+          {
+            "val": 17.1
+          },
+          {
+            "val": 14.2
+          },
+          {
+            "val": 14.5
+          },
+          {
+            "val": 11.2
+          },
+          {
+            "val": 12.7
+          },
+          {
+            "val": 10.1
+          },
+          {
+            "val": 8.6
+          },
+          {
+            "val": 8.4
+          },
+          {
+            "val": 8.6
+          },
+          {
+            "val": 6.3
+          },
+          {
+            "val": 6.9
+          },
+          {
+            "val": 5.5
+          },
+          {
+            "val": 5.3
+          },
+          {
+            "val": 5.4
+          },
+          {
+            "val": 5.4
+          },
+          {
+            "val": 5.4
+          },
+          {
+            "val": 6.9
+          },
+          {
+            "val": 5.8
+          },
+          {
+            "val": 6.0
+          }
+        ],
+        "Hemoglobin": [
+          {
+            "val": 9.4
+          },
+          {
+            "val": 9.5
+          },
+          {
+            "val": 9.7
+          },
+          {
+            "val": 9.7
+          },
+          {
+            "val": 9.9
+          },
+          {
+            "val": 10.1
+          },
+          {
+            "val": 10.0
+          },
+          {
+            "val": 10.2
+          },
+          {
+            "val": 10.3
+          },
+          {
+            "val": 10.4
+          },
+          {
+            "val": 10.2
+          },
+          {
+            "val": 10.3
+          },
+          {
+            "val": 10.7
+          },
+          {
+            "val": 10.7
+          },
+          {
+            "val": 10.6
+          },
+          {
+            "val": 10.9
+          },
+          {
+            "val": 10.8
+          },
+          {
+            "val": 11.0
+          },
+          {
+            "val": 11.1
+          },
+          {
+            "val": 11.1
+          },
+          {
+            "val": 11.2
+          },
+          {
+            "val": 11.4
+          },
+          {
+            "val": 11.6
+          },
+          {
+            "val": 11.6
+          }
+        ],
+        "ALT": [
+          {
+            "val": 28
+          },
+          {
+            "val": 32
+          },
+          {
+            "val": 26
+          },
+          {
+            "val": 31
+          },
+          {
+            "val": 31
+          },
+          {
+            "val": 35
+          },
+          {
+            "val": 31
+          },
+          {
+            "val": 32
+          },
+          {
+            "val": 34
+          },
+          {
+            "val": 33
+          },
+          {
+            "val": 38
+          },
+          {
+            "val": 39
+          },
+          {
+            "val": 38
+          },
+          {
+            "val": 33
+          },
+          {
+            "val": 42
+          },
+          {
+            "val": 39
+          },
+          {
+            "val": 40
+          },
+          {
+            "val": 40
+          },
+          {
+            "val": 41
+          },
+          {
+            "val": 45
+          },
+          {
+            "val": 40
+          },
+          {
+            "val": 40
+          },
+          {
+            "val": 47
+          },
+          {
+            "val": 44
+          }
+        ]
+      },
+      "consultBrief": "Disease activity well controlled on Methotrexate (ESR 18). Haemoglobin recovering. Monitor liver enzymes on Methotrexate.",
+      "demo": true,
+      "clinicalPatterns": [
+        {
+          "type": "Lab Alert",
+          "description": "CRP 6.0 mg/L (ref < 5 mg/L), rising from 5.3 over 6 readings.",
+          "severity": "LOW",
+          "source": "lab_engine",
+          "lab": "CRP",
+          "minutes_ago": 1026
+        },
+        {
+          "type": "Lab Alert",
+          "description": "Hemoglobin 11.6 g/dL (ref 12.0\u201317.0 g/dL), rising from 11.0 over 6 readings.",
+          "severity": "LOW",
+          "source": "lab_engine",
+          "lab": "Hemoglobin",
+          "minutes_ago": 918
+        },
+        {
+          "type": "Lab Due",
+          "description": "Methotrexate monitoring: LFT + CBC due this week.",
+          "severity": "INFO",
+          "minutes_ago": 1500
+        },
+        {
+          "type": "Data Ingest",
+          "description": "Lab Report processed by Intake AI: ESR, CRP, haemoglobin and ALT extracted.",
+          "severity": "INFO",
+          "minutes_ago": 8650
+        }
+      ],
+      "riskScore": 16,
+      "bodyFlags": []
+    },
+    {
+      "id": "P-00611",
+      "name": "Rohit Sharma",
+      "age": 31,
+      "sex": "Male",
+      "dob": "02 Feb 1995",
+      "doctor": "Dr. Vedanth",
+      "ward": "Endocrinology",
+      "adherenceScore": 88,
+      "adherenceCalendar": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "diagnosis": [
+        "Type 1 Diabetes Mellitus (E10.9)"
+      ],
+      "medications": [
+        {
+          "name": "Insulin Glargine",
+          "dose": "22 units",
+          "freq": "At bedtime",
+          "color": "#8b5cf6",
+          "shape": "Injection",
           "markings": "-"
         },
         {
-          "name": "4. Atorvastatin Calcium 8",
-          "dose": "0 mg, Once Daily (night - bedtime), Duration: 90 Days (Take at bedtime. Report unexplained muscle pain or dark urine immediately. Avoid Clarithromycin/Erythromycin).",
-          "freq": "As Directed",
-          "color": "#1a6bff",
-          "shape": "Round",
+          "name": "Insulin Aspart",
+          "dose": "6 units",
+          "freq": "Three times daily",
+          "color": "#f97316",
+          "shape": "Injection",
           "markings": "-"
         }
       ],
       "labs": {
         "HbA1c": [
           {
-            "date": "Jul 23",
-            "val": 6.5
+            "val": 8.6
           },
           {
-            "date": "Aug 23",
-            "val": 6.59
+            "val": 8.5
           },
           {
-            "date": "Sep 23",
-            "val": 6.67
+            "val": 8.3
           },
           {
-            "date": "Oct 23",
-            "val": 6.76
+            "val": 8.3
           },
           {
-            "date": "Nov 23",
-            "val": 6.84
+            "val": 8.0
           },
           {
-            "date": "Dec 23",
-            "val": 6.93
+            "val": 7.9
           },
           {
-            "date": "Jan 24",
-            "val": 7.02
+            "val": 7.9
           },
           {
-            "date": "Feb 24",
+            "val": 7.8
+          },
+          {
+            "val": 7.6
+          },
+          {
+            "val": 7.6
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.3
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.5
+          },
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.4
+          },
+          {
+            "val": 7.2
+          },
+          {
+            "val": 7.2
+          },
+          {
             "val": 7.1
           },
           {
-            "date": "Mar 24",
-            "val": 7.19
+            "val": 7.3
           },
           {
-            "date": "Apr 24",
-            "val": 7.27
+            "val": 7.1
           },
           {
-            "date": "May 24",
-            "val": 7.36
+            "val": 7.1
           },
           {
-            "date": "Jun 24",
-            "val": 7.45
+            "val": 7.4
           },
           {
-            "date": "Jul 24",
-            "val": 7.53
-          },
-          {
-            "date": "Aug 24",
-            "val": 7.62
-          },
-          {
-            "date": "Sep 24",
-            "val": 7.7
-          },
-          {
-            "date": "Oct 24",
-            "val": 7.79
-          },
-          {
-            "date": "Nov 24",
-            "val": 7.88
-          },
-          {
-            "date": "Dec 24",
-            "val": 7.96
-          },
-          {
-            "date": "Jan 25",
-            "val": 8.05
-          },
-          {
-            "date": "Feb 25",
-            "val": 8.13
-          },
-          {
-            "date": "Mar 25",
-            "val": 8.22
-          },
-          {
-            "date": "Apr 25",
-            "val": 8.31
-          },
-          {
-            "date": "May 25",
-            "val": 8.39
-          },
-          {
-            "date": "Jun 25",
-            "val": 8.48
-          },
-          {
-            "date": "Jul 25",
-            "val": 8.56
-          },
-          {
-            "date": "Aug 25",
-            "val": 8.65
-          },
-          {
-            "date": "Sep 25",
-            "val": 8.74
-          },
-          {
-            "date": "Oct 25",
-            "val": 8.82
-          },
-          {
-            "date": "Nov 25",
-            "val": 8.91
-          },
-          {
-            "date": "Dec 25",
-            "val": 8.99
-          },
-          {
-            "date": "Jan 26",
-            "val": 9.08
-          },
-          {
-            "date": "Feb 26",
-            "val": 9.17
-          },
-          {
-            "date": "Mar 26",
-            "val": 9.25
-          },
-          {
-            "date": "Apr 26",
-            "val": 9.34
-          },
-          {
-            "date": "May 26",
-            "val": 9.42
-          },
-          {
-            "date": "Jun 26",
-            "val": 9.5
+            "val": 7.2
           }
         ],
-        "Creatinine": [
+        "Glucose": [
           {
-            "date": "Jul 23",
-            "val": 0.9
+            "val": 214
           },
           {
-            "date": "Aug 23",
-            "val": 0.93
+            "val": 219
           },
           {
-            "date": "Sep 23",
-            "val": 0.97
+            "val": 192
           },
           {
-            "date": "Oct 23",
-            "val": 1.0
+            "val": 209
           },
           {
-            "date": "Nov 23",
-            "val": 1.04
+            "val": 183
           },
           {
-            "date": "Dec 23",
-            "val": 1.07
+            "val": 185
           },
           {
-            "date": "Jan 24",
-            "val": 1.1
+            "val": 192
           },
           {
-            "date": "Feb 24",
-            "val": 1.14
+            "val": 173
           },
           {
-            "date": "Mar 24",
-            "val": 1.17
+            "val": 174
           },
           {
-            "date": "Apr 24",
-            "val": 1.21
+            "val": 160
           },
           {
-            "date": "May 24",
-            "val": 1.24
+            "val": 180
           },
           {
-            "date": "Jun 24",
-            "val": 1.27
+            "val": 178
           },
           {
-            "date": "Jul 24",
-            "val": 1.31
+            "val": 153
           },
           {
-            "date": "Aug 24",
-            "val": 1.34
+            "val": 149
           },
           {
-            "date": "Sep 24",
-            "val": 1.38
+            "val": 157
           },
           {
-            "date": "Oct 24",
-            "val": 1.41
+            "val": 157
           },
           {
-            "date": "Nov 24",
-            "val": 1.44
+            "val": 163
           },
           {
-            "date": "Dec 24",
-            "val": 1.48
+            "val": 150
           },
           {
-            "date": "Jan 25",
-            "val": 1.51
+            "val": 156
           },
           {
-            "date": "Feb 25",
-            "val": 1.55
+            "val": 143
           },
           {
-            "date": "Mar 25",
-            "val": 1.58
+            "val": 144
           },
           {
-            "date": "Apr 25",
-            "val": 1.61
+            "val": 140
           },
           {
-            "date": "May 25",
-            "val": 1.65
+            "val": 153
           },
           {
-            "date": "Jun 25",
-            "val": 1.68
-          },
-          {
-            "date": "Jul 25",
-            "val": 1.72
-          },
-          {
-            "date": "Aug 25",
-            "val": 1.75
-          },
-          {
-            "date": "Sep 25",
-            "val": 1.78
-          },
-          {
-            "date": "Oct 25",
-            "val": 1.82
-          },
-          {
-            "date": "Nov 25",
-            "val": 1.85
-          },
-          {
-            "date": "Dec 25",
-            "val": 1.89
-          },
-          {
-            "date": "Jan 26",
-            "val": 1.92
-          },
-          {
-            "date": "Feb 26",
-            "val": 1.95
-          },
-          {
-            "date": "Mar 26",
-            "val": 1.99
-          },
-          {
-            "date": "Apr 26",
-            "val": 2.02
-          },
-          {
-            "date": "May 26",
-            "val": 2.06
-          },
-          {
-            "date": "Jun 26",
-            "val": 2.1
+            "val": 152
           }
-        ],
+        ]
+      },
+      "consultBrief": "Improving control after switch to basal-bolus regimen. Nocturnal hypoglycaemia overnight: consider reducing Glargine by 10%.",
+      "demo": true,
+      "clinicalPatterns": [
+        {
+          "type": "Lab Alert",
+          "description": "HbA1c 7.2 % (ref 4.0\u20135.6 %).",
+          "severity": "MEDIUM",
+          "source": "lab_engine",
+          "lab": "HbA1c",
+          "minutes_ago": 217
+        },
+        {
+          "type": "Lab Alert",
+          "description": "Glucose 152 mg/dL (ref 70\u2013140 mg/dL), rising from 150 over 6 readings.",
+          "severity": "LOW",
+          "source": "lab_engine",
+          "lab": "Glucose",
+          "minutes_ago": 1890
+        },
+        {
+          "type": "Hypoglycaemia Event",
+          "description": "CGM: glucose 58 mg/dL at 03:10, self-treated.",
+          "severity": "MEDIUM",
+          "minutes_ago": 420
+        }
+      ],
+      "riskScore": 33,
+      "bodyFlags": []
+    },
+    {
+      "id": "P-00417",
+      "name": "Mohammed Irfan",
+      "age": 41,
+      "sex": "Male",
+      "dob": "28 Apr 1985",
+      "doctor": "Dr. Vedanth",
+      "ward": "Cardiology OPD",
+      "adherenceScore": 94,
+      "adherenceCalendar": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "diagnosis": [
+        "Essential Hypertension (I10)",
+        "Dyslipidaemia (E78.5)"
+      ],
+      "medications": [
+        {
+          "name": "Amlodipine",
+          "dose": "5 mg",
+          "freq": "Once daily",
+          "color": "#e5e7eb",
+          "shape": "Round",
+          "markings": "AML 5"
+        },
+        {
+          "name": "Rosuvastatin",
+          "dose": "10 mg",
+          "freq": "Once daily",
+          "color": "#ec4899",
+          "shape": "Round",
+          "markings": "R 10"
+        }
+      ],
+      "labs": {
         "BP_Systolic": [
           {
-            "time": "Just Now",
-            "val": 158
+            "val": 154
+          },
+          {
+            "val": 150
+          },
+          {
+            "val": 149
+          },
+          {
+            "val": 142
+          },
+          {
+            "val": 147
+          },
+          {
+            "val": 144
+          },
+          {
+            "val": 143
+          },
+          {
+            "val": 135
+          },
+          {
+            "val": 133
+          },
+          {
+            "val": 131
+          },
+          {
+            "val": 130
+          },
+          {
+            "val": 128
+          },
+          {
+            "val": 132
+          },
+          {
+            "val": 128
+          },
+          {
+            "val": 131
+          },
+          {
+            "val": 130
+          },
+          {
+            "val": 126
+          },
+          {
+            "val": 124
+          },
+          {
+            "val": 125
+          },
+          {
+            "val": 123
+          },
+          {
+            "val": 127
+          },
+          {
+            "val": 124
+          },
+          {
+            "val": 123
+          },
+          {
+            "val": 126
           }
         ],
         "LDL": [
           {
-            "date": "Jul 23",
-            "val": 110
+            "val": 168
           },
           {
-            "date": "Aug 23",
-            "val": 111
-          },
-          {
-            "date": "Sep 23",
-            "val": 113
-          },
-          {
-            "date": "Oct 23",
-            "val": 114
-          },
-          {
-            "date": "Nov 23",
-            "val": 116
-          },
-          {
-            "date": "Dec 23",
-            "val": 117
-          },
-          {
-            "date": "Jan 24",
-            "val": 119
-          },
-          {
-            "date": "Feb 24",
-            "val": 120
-          },
-          {
-            "date": "Mar 24",
-            "val": 122
-          },
-          {
-            "date": "Apr 24",
-            "val": 123
-          },
-          {
-            "date": "May 24",
-            "val": 125
-          },
-          {
-            "date": "Jun 24",
-            "val": 126
-          },
-          {
-            "date": "Jul 24",
-            "val": 128
-          },
-          {
-            "date": "Aug 24",
-            "val": 129
-          },
-          {
-            "date": "Sep 24",
-            "val": 131
-          },
-          {
-            "date": "Oct 24",
-            "val": 132
-          },
-          {
-            "date": "Nov 24",
-            "val": 134
-          },
-          {
-            "date": "Dec 24",
-            "val": 135
-          },
-          {
-            "date": "Jan 25",
-            "val": 137
-          },
-          {
-            "date": "Feb 25",
-            "val": 138
-          },
-          {
-            "date": "Mar 25",
-            "val": 140
-          },
-          {
-            "date": "Apr 25",
-            "val": 141
-          },
-          {
-            "date": "May 25",
-            "val": 143
-          },
-          {
-            "date": "Jun 25",
-            "val": 144
-          },
-          {
-            "date": "Jul 25",
-            "val": 146
-          },
-          {
-            "date": "Aug 25",
-            "val": 147
-          },
-          {
-            "date": "Sep 25",
-            "val": 149
-          },
-          {
-            "date": "Oct 25",
-            "val": 150
-          },
-          {
-            "date": "Nov 25",
-            "val": 152
-          },
-          {
-            "date": "Dec 25",
-            "val": 153
-          },
-          {
-            "date": "Jan 26",
             "val": 155
           },
           {
-            "date": "Feb 26",
-            "val": 156
+            "val": 154
           },
           {
-            "date": "Mar 26",
-            "val": 158
+            "val": 151
           },
           {
-            "date": "Apr 26",
-            "val": 159
+            "val": 137
           },
           {
-            "date": "May 26",
-            "val": 161
+            "val": 134
           },
           {
-            "date": "Jun 26",
-            "val": 162
+            "val": 126
+          },
+          {
+            "val": 126
+          },
+          {
+            "val": 120
+          },
+          {
+            "val": 115
+          },
+          {
+            "val": 116
+          },
+          {
+            "val": 109
+          },
+          {
+            "val": 102
+          },
+          {
+            "val": 100
+          },
+          {
+            "val": 101
+          },
+          {
+            "val": 100
+          },
+          {
+            "val": 93
+          },
+          {
+            "val": 98
+          },
+          {
+            "val": 93
+          },
+          {
+            "val": 96
+          },
+          {
+            "val": 88
+          },
+          {
+            "val": 90
+          },
+          {
+            "val": 86
+          },
+          {
+            "val": 92
           }
         ],
         "HeartRate": [
           {
-            "time": "Just Now",
-            "val": 92
-          }
-        ],
-        "Glucose": [
+            "val": 84
+          },
           {
-            "time": "Just Now",
-            "val": 212
+            "val": 82
+          },
+          {
+            "val": 83
+          },
+          {
+            "val": 83
+          },
+          {
+            "val": 82
+          },
+          {
+            "val": 82
+          },
+          {
+            "val": 81
+          },
+          {
+            "val": 80
+          },
+          {
+            "val": 78
+          },
+          {
+            "val": 77
+          },
+          {
+            "val": 77
+          },
+          {
+            "val": 80
+          },
+          {
+            "val": 75
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 76
+          },
+          {
+            "val": 75
+          },
+          {
+            "val": 77
+          },
+          {
+            "val": 77
+          },
+          {
+            "val": 74
+          },
+          {
+            "val": 72
+          },
+          {
+            "val": 75
+          },
+          {
+            "val": 75
+          },
+          {
+            "val": 72
           }
         ]
       },
-      "bodyFlags": [
-        "Kidney",
-        "Heart"
-      ],
-      "clinicalPatterns": [
-        {
-          "type": "Data Ingest",
-          "time": "Just Now",
-          "description": "New clinical report ingested by AI.",
-          "severity": "LOW"
-        },
-        {
-          "type": "Data Ingest",
-          "time": "Just Now",
-          "description": "New clinical report ingested by AI.",
-          "severity": "LOW"
-        },
-        {
-          "type": "Data Ingest",
-          "time": "Just Now",
-          "description": "New clinical report ingested by AI.",
-          "severity": "LOW"
-        },
-        {
-          "type": "Lab Alert",
-          "time": "2h ago",
-          "description": "HbA1c increased significantly to 9.5% over 12 months.",
-          "severity": "HIGH",
-          "urgency_score": 8,
-          "urgency_computed_at": "2026-06-13T10:00:00Z"
-        },
-        {
-          "type": "Vitals",
-          "time": "5h ago",
-          "description": "Blood pressure remains elevated despite dual-therapy.",
-          "severity": "MEDIUM",
-          "urgency_score": 6,
-          "urgency_computed_at": "2026-06-13T07:00:00Z"
-        },
-        {
-          "type": "Adherence",
-          "time": "1d ago",
-          "description": "Missed 3 doses of Lisinopril this week.",
-          "severity": "MEDIUM",
-          "urgency_score": 7,
-          "urgency_computed_at": "2026-06-12T12:00:00Z"
-        },
-        {
-          "type": "Renal",
-          "time": "2d ago",
-          "description": "Creatinine trend suggests progressive Stage 3 CKD.",
-          "severity": "HIGH",
-          "urgency_score": 9,
-          "urgency_computed_at": "2026-06-11T12:00:00Z"
-        }
-      ],
-      "adherenceCalendar": [
-        false,
-        true,
-        false,
-        false,
-        true,
-        true,
-        false
-      ],
-      "consultBrief": "T2DM uncontrolled. Advise titration of insulin or SGLT2i. Monitor renal function closely."
+      "consultBrief": "BP and LDL both at target. Routine 6-monthly review; continue current regimen.",
+      "demo": true,
+      "clinicalPatterns": [],
+      "riskScore": 10,
+      "bodyFlags": []
     },
     {
-      "id": "P-00284",
-      "name": "Kavitha Rajan",
-      "age": 45,
+      "id": "P-00738",
+      "name": "Ananya Iyer",
+      "age": 29,
       "sex": "Female",
-      "dob": "05 Aug 1980",
-      "diagnosis": [
-        "Displaced fracture of the radius"
+      "dob": "11 Dec 1996",
+      "doctor": "Dr. Vedanth",
+      "ward": "Endocrinology OPD",
+      "adherenceScore": 96,
+      "adherenceCalendar": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
       ],
-      "doctor": "Dr. Ananya Sharma",
-      "ward": "Rheumatology",
-      "riskScore": 45,
-      "adherenceScore": 92,
+      "diagnosis": [
+        "Primary Hypothyroidism (E03.9)",
+        "Polycystic Ovary Syndrome (E28.2)"
+      ],
       "medications": [
         {
-          "name": "Methotrexate",
-          "dose": "15mg",
-          "freq": "Once weekly",
-          "color": "#818CF8",
-          "shape": "Capsule",
-          "markings": "MTX15"
-        },
-        {
-          "name": "Folic Acid",
-          "dose": "5mg",
+          "name": "Levothyroxine",
+          "dose": "75 mcg",
           "freq": "Once daily",
-          "color": "#34D399",
+          "color": "#1a6bff",
           "shape": "Round",
-          "markings": "FA5"
+          "markings": "T 75"
         },
         {
-          "name": "Salbutamol",
-          "dose": "100mcg",
-          "freq": "PRN",
-          "color": "#60A5FA",
-          "shape": "Inhaler",
-          "markings": "VENT"
+          "name": "Metformin",
+          "dose": "500 mg",
+          "freq": "Twice daily",
+          "color": "#e5e7eb",
+          "shape": "Round",
+          "markings": "G 500"
         }
       ],
       "labs": {
-        "ESR": [
+        "TSH": [
           {
-            "date": "Jul 23",
-            "val": 45
+            "val": 9.8
           },
           {
-            "date": "Aug 23",
-            "val": 44
+            "val": 9.0
           },
           {
-            "date": "Sep 23",
-            "val": 43
+            "val": 8.3
           },
           {
-            "date": "Oct 23",
-            "val": 42
+            "val": 7.7
           },
           {
-            "date": "Nov 23",
-            "val": 41
+            "val": 7.0
           },
           {
-            "date": "Dec 23",
-            "val": 40
+            "val": 6.8
           },
           {
-            "date": "Jan 24",
-            "val": 39
+            "val": 5.7
           },
           {
-            "date": "Feb 24",
-            "val": 39
+            "val": 5.5
           },
           {
-            "date": "Mar 24",
-            "val": 38
+            "val": 5.3
           },
           {
-            "date": "Apr 24",
-            "val": 37
+            "val": 4.8
           },
           {
-            "date": "May 24",
-            "val": 36
+            "val": 4.7
           },
           {
-            "date": "Jun 24",
-            "val": 35
+            "val": 3.8
           },
           {
-            "date": "Jul 24",
-            "val": 34
+            "val": 3.6
           },
           {
-            "date": "Aug 24",
-            "val": 33
+            "val": 3.3
           },
           {
-            "date": "Sep 24",
-            "val": 33
+            "val": 3.0
           },
           {
-            "date": "Oct 24",
-            "val": 32
+            "val": 2.8
           },
           {
-            "date": "Nov 24",
-            "val": 31
+            "val": 3.0
           },
           {
-            "date": "Dec 24",
-            "val": 30
+            "val": 2.7
           },
           {
-            "date": "Jan 25",
-            "val": 29
+            "val": 2.8
           },
           {
-            "date": "Feb 25",
-            "val": 28
+            "val": 3.1
           },
           {
-            "date": "Mar 25",
-            "val": 28
+            "val": 3.0
           },
           {
-            "date": "Apr 25",
-            "val": 27
+            "val": 2.8
           },
           {
-            "date": "May 25",
-            "val": 26
+            "val": 2.5
           },
           {
-            "date": "Jun 25",
-            "val": 25
-          },
-          {
-            "date": "Jul 25",
-            "val": 24
-          },
-          {
-            "date": "Aug 25",
-            "val": 23
-          },
-          {
-            "date": "Sep 25",
-            "val": 22
-          },
-          {
-            "date": "Oct 25",
-            "val": 22
-          },
-          {
-            "date": "Nov 25",
-            "val": 21
-          },
-          {
-            "date": "Dec 25",
-            "val": 20
-          },
-          {
-            "date": "Jan 26",
-            "val": 19
-          },
-          {
-            "date": "Feb 26",
-            "val": 18
-          },
-          {
-            "date": "Mar 26",
-            "val": 17
-          },
-          {
-            "date": "Apr 26",
-            "val": 16
-          },
-          {
-            "date": "May 26",
-            "val": 16
-          },
-          {
-            "date": "Jun 26",
-            "val": 15
+            "val": 2.6
           }
         ],
         "Hemoglobin": [
           {
-            "date": "Jul 23",
-            "val": 9.0
-          },
-          {
-            "date": "Aug 23",
-            "val": 9.1
-          },
-          {
-            "date": "Sep 23",
-            "val": 9.2
-          },
-          {
-            "date": "Oct 23",
-            "val": 9.3
-          },
-          {
-            "date": "Nov 23",
-            "val": 9.4
-          },
-          {
-            "date": "Dec 23",
-            "val": 9.5
-          },
-          {
-            "date": "Jan 24",
-            "val": 9.6
-          },
-          {
-            "date": "Feb 24",
-            "val": 9.7
-          },
-          {
-            "date": "Mar 24",
-            "val": 9.8
-          },
-          {
-            "date": "Apr 24",
-            "val": 9.9
-          },
-          {
-            "date": "May 24",
-            "val": 10.0
-          },
-          {
-            "date": "Jun 24",
-            "val": 10.1
-          },
-          {
-            "date": "Jul 24",
-            "val": 10.2
-          },
-          {
-            "date": "Aug 24",
-            "val": 10.3
-          },
-          {
-            "date": "Sep 24",
-            "val": 10.4
-          },
-          {
-            "date": "Oct 24",
-            "val": 10.5
-          },
-          {
-            "date": "Nov 24",
-            "val": 10.6
-          },
-          {
-            "date": "Dec 24",
-            "val": 10.7
-          },
-          {
-            "date": "Jan 25",
-            "val": 10.8
-          },
-          {
-            "date": "Feb 25",
-            "val": 10.9
-          },
-          {
-            "date": "Mar 25",
-            "val": 11.0
-          },
-          {
-            "date": "Apr 25",
-            "val": 11.1
-          },
-          {
-            "date": "May 25",
-            "val": 11.2
-          },
-          {
-            "date": "Jun 25",
-            "val": 11.3
-          },
-          {
-            "date": "Jul 25",
-            "val": 11.4
-          },
-          {
-            "date": "Aug 25",
-            "val": 11.5
-          },
-          {
-            "date": "Sep 25",
             "val": 11.6
           },
           {
-            "date": "Oct 25",
+            "val": 11.5
+          },
+          {
             "val": 11.7
           },
           {
-            "date": "Nov 25",
-            "val": 11.8
+            "val": 11.7
           },
           {
-            "date": "Dec 25",
-            "val": 11.9
-          },
-          {
-            "date": "Jan 26",
             "val": 12.0
           },
           {
-            "date": "Feb 26",
-            "val": 12.1
+            "val": 12.0
           },
           {
-            "date": "Mar 26",
+            "val": 12.0
+          },
+          {
+            "val": 12.0
+          },
+          {
+            "val": 11.8
+          },
+          {
             "val": 12.2
           },
           {
-            "date": "Apr 26",
-            "val": 12.3
+            "val": 12.1
           },
           {
-            "date": "May 26",
+            "val": 12.2
+          },
+          {
+            "val": 12.0
+          },
+          {
+            "val": 12.1
+          },
+          {
             "val": 12.4
           },
           {
-            "date": "Jun 26",
-            "val": 12.8
+            "val": 12.2
+          },
+          {
+            "val": 12.2
+          },
+          {
+            "val": 12.3
+          },
+          {
+            "val": 12.4
+          },
+          {
+            "val": 12.5
+          },
+          {
+            "val": 12.6
+          },
+          {
+            "val": 12.5
+          },
+          {
+            "val": 12.5
+          },
+          {
+            "val": 12.7
           }
         ],
-        "FEV1": [
+        "Glucose": [
           {
-            "date": "Jul 23",
-            "val": 78
+            "val": 118
           },
           {
-            "date": "Aug 23",
-            "val": 78
+            "val": 117
           },
           {
-            "date": "Sep 23",
-            "val": 78
-          },
-          {
-            "date": "Oct 23",
-            "val": 78
-          },
-          {
-            "date": "Nov 23",
-            "val": 78
-          },
-          {
-            "date": "Dec 23",
-            "val": 78
-          },
-          {
-            "date": "Jan 24",
-            "val": 78
-          },
-          {
-            "date": "Feb 24",
-            "val": 79
-          },
-          {
-            "date": "Mar 24",
-            "val": 79
-          },
-          {
-            "date": "Apr 24",
-            "val": 79
-          },
-          {
-            "date": "May 24",
-            "val": 79
-          },
-          {
-            "date": "Jun 24",
-            "val": 79
-          },
-          {
-            "date": "Jul 24",
-            "val": 79
-          },
-          {
-            "date": "Aug 24",
-            "val": 79
-          },
-          {
-            "date": "Sep 24",
-            "val": 80
-          },
-          {
-            "date": "Oct 24",
-            "val": 80
-          },
-          {
-            "date": "Nov 24",
-            "val": 80
-          },
-          {
-            "date": "Dec 24",
-            "val": 80
-          },
-          {
-            "date": "Jan 25",
-            "val": 80
-          },
-          {
-            "date": "Feb 25",
-            "val": 80
-          },
-          {
-            "date": "Mar 25",
-            "val": 81
-          },
-          {
-            "date": "Apr 25",
-            "val": 81
-          },
-          {
-            "date": "May 25",
-            "val": 81
-          },
-          {
-            "date": "Jun 25",
-            "val": 81
-          },
-          {
-            "date": "Jul 25",
-            "val": 81
-          },
-          {
-            "date": "Aug 25",
-            "val": 81
-          },
-          {
-            "date": "Sep 25",
-            "val": 81
-          },
-          {
-            "date": "Oct 25",
-            "val": 82
-          },
-          {
-            "date": "Nov 25",
-            "val": 82
-          },
-          {
-            "date": "Dec 25",
-            "val": 82
-          },
-          {
-            "date": "Jan 26",
-            "val": 82
-          },
-          {
-            "date": "Feb 26",
-            "val": 82
-          },
-          {
-            "date": "Mar 26",
-            "val": 82
-          },
-          {
-            "date": "Apr 26",
-            "val": 82
-          },
-          {
-            "date": "May 26",
-            "val": 83
-          },
-          {
-            "date": "Jun 26",
-            "val": 83
-          }
-        ],
-        "BP_Systolic": [
-          {
-            "time": "Just Now",
             "val": 120
-          }
-        ],
-        "HeartRate": [
+          },
           {
-            "time": "Just Now",
-            "val": 72
-          }
-        ],
-        "Glucose": [
+            "val": 112
+          },
           {
-            "time": "Just Now",
-            "val": 100
+            "val": 114
+          },
+          {
+            "val": 110
+          },
+          {
+            "val": 115
+          },
+          {
+            "val": 110
+          },
+          {
+            "val": 111
+          },
+          {
+            "val": 115
+          },
+          {
+            "val": 107
+          },
+          {
+            "val": 107
+          },
+          {
+            "val": 108
+          },
+          {
+            "val": 112
+          },
+          {
+            "val": 108
+          },
+          {
+            "val": 109
+          },
+          {
+            "val": 111
+          },
+          {
+            "val": 103
+          },
+          {
+            "val": 105
+          },
+          {
+            "val": 101
+          },
+          {
+            "val": 107
+          },
+          {
+            "val": 99
+          },
+          {
+            "val": 105
+          },
+          {
+            "val": 102
           }
         ]
       },
-      "bodyFlags": [
-        "Joints",
-        "Lungs"
-      ],
-      "clinicalPatterns": [
-        {
-          "type": "Data Ingest",
-          "time": "Just Now",
-          "description": "New clinical report ingested by AI.",
-          "severity": "LOW"
-        },
-        {
-          "type": "Lab Good",
-          "time": "12h ago",
-          "description": "ESR normalized under DMARD therapy.",
-          "severity": "LOW",
-          "urgency_score": 2,
-          "urgency_computed_at": "2026-06-13T00:00:00Z"
-        },
-        {
-          "type": "Lab Good",
-          "time": "1d ago",
-          "description": "Anemia resolved (Hgb > 12.5).",
-          "severity": "LOW",
-          "urgency_score": 2,
-          "urgency_computed_at": "2026-06-12T12:00:00Z"
-        }
-      ],
-      "adherenceCalendar": [
-        true,
-        true,
-        true,
-        false,
-        true,
-        true,
-        true
-      ],
-      "consultBrief": "RA stable. Mild asthma symptoms reported. Bone density scan recommended."
-    },
-    {
-      "id": "P-56700",
-      "name": "Rajan Iyer",
-      "age": 41,
-      "sex": "Unknown",
-      "dob": "01 Jan 1980",
-      "diagnosis": [
-        "Paroxysmal Atrial Fibrillatio",
-        "(ICD-10: I48.11)",
-        "Type 2 Diabetes Mellitus with hyperglycaemia (ICD-10: E11.65)",
-        "Esse",
-        "tial Hyperte",
-        "sio",
-        "u",
-        "co",
-        "trolled (ICD-10: I10)",
-        "Familial Hypercholesterolaemia (Pure) (ICD-10: E78.01)"
-      ],
-      "doctor": "Dr. AI Agent",
-      "ward": "General",
-      "riskScore": 74,
-      "adherenceScore": 65,
-      "medications": [
-        {
-          "name": "1. Apixaban 5 mg twice da",
-          "dose": "ily, ongoing.",
-          "freq": "As Directed",
-          "color": "#1a6bff",
-          "shape": "Round",
-          "markings": "-"
-        },
-        {
-          "name": "2. Metoprolol Succinate X",
-          "dose": "R 100 mg once daily (morning), 90 days.",
-          "freq": "As Directed",
-          "color": "#1a6bff",
-          "shape": "Round",
-          "markings": "-"
-        },
-        {
-          "name": "3. Amlodipine Besylate 5 ",
-          "dose": "mg once daily (morning), 90 days.",
-          "freq": "As Directed",
-          "color": "#1a6bff",
-          "shape": "Round",
-          "markings": "-"
-        },
-        {
-          "name": "4. Atorvastatin Calcium 8",
-          "dose": "0 mg once daily (night - bedtime), 90 days.",
-          "freq": "As Directed",
-          "color": "#1a6bff",
-          "shape": "Round",
-          "markings": "-"
-        }
-      ],
-      "labs": {
-        "BP_Systolic": [
-          {
-            "time": "Just Now",
-            "val": 158
-          }
-        ],
-        "HeartRate": [
-          {
-            "time": "Just Now",
-            "val": 92
-          }
-        ],
-        "Glucose": [
-          {
-            "time": "Just Now",
-            "val": 212
-          }
-        ]
-      },
-      "bodyFlags": [
-        "Heart"
-      ],
-      "clinicalPatterns": [
-        {
-          "type": "Intake Note",
-          "time": "Just Now",
-          "description": "Patient file initialized via AI.",
-          "severity": "LOW"
-        }
-      ],
-      "adherenceCalendar": [
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-      ],
-      "consultBrief": "Intake completed. Primary focus: Paroxysmal Atrial Fibrillatio."
+      "consultBrief": "Euthyroid on current Levothyroxine dose. Stable; annual review.",
+      "demo": true,
+      "clinicalPatterns": [],
+      "riskScore": 10,
+      "bodyFlags": []
     }
   ],
   "pill_events": [
     {
       "id": 1,
       "status": "confirmed",
-      "drug": "Metformin",
-      "time": "08:00 AM"
+      "drug": "Metformin 1000 mg",
+      "time": "08:02 AM",
+      "patient": "Arjun Mehta"
     },
     {
       "id": 2,
-      "status": "wrong",
-      "drug": "Lisinopril",
-      "time": "08:05 AM",
-      "expected": "Amlodipine"
+      "status": "confirmed",
+      "drug": "Sacubitril/Valsartan",
+      "time": "08:15 AM",
+      "patient": "Saraswathi Krishnan"
     },
     {
       "id": 3,
-      "status": "unconfirmed",
-      "drug": "Unknown",
-      "time": "12:00 PM"
+      "status": "wrong",
+      "drug": "Aspirin 75 mg",
+      "time": "08:31 AM",
+      "expected": "Clopidogrel 75 mg",
+      "patient": "Venkatesh Rao"
     },
     {
       "id": 4,
       "status": "confirmed",
-      "drug": "Amlodipine",
-      "time": "08:00 PM"
+      "drug": "Levothyroxine 75 mcg",
+      "time": "07:10 AM",
+      "patient": "Ananya Iyer"
+    },
+    {
+      "id": 5,
+      "status": "unconfirmed",
+      "drug": "Apixaban 5 mg",
+      "time": "09:00 PM",
+      "patient": "Arjun Mehta"
+    },
+    {
+      "id": 6,
+      "status": "confirmed",
+      "drug": "Tiotropium 18 mcg",
+      "time": "09:05 AM",
+      "patient": "Lakshmi Narayanan"
     }
   ],
   "interactions": [
     {
-      "drug_a": "Lisinopril",
-      "drug_b": "Amlodipine",
-      "severity": "low",
-      "desc": "Monitor blood pressure."
+      "drug_a": "Spironolactone",
+      "drug_b": "Sacubitril/Valsartan",
+      "severity": "high",
+      "desc": "Additive hyperkalaemia risk; current K+ 5.6 mmol/L. Review dose."
+    },
+    {
+      "drug_a": "Aspirin",
+      "drug_b": "Clopidogrel",
+      "severity": "medium",
+      "desc": "Intended dual antiplatelet therapy; increased bleeding risk. Monitor for GI bleeding."
+    },
+    {
+      "drug_a": "Apixaban",
+      "drug_b": "Aspirin",
+      "severity": "high",
+      "desc": "Major bleeding risk if combined; avoid unless specifically indicated."
     },
     {
       "drug_a": "Metformin",
-      "drug_b": "Amlodipine",
-      "severity": "none",
-      "desc": "No known interaction."
+      "drug_b": "Empagliflozin",
+      "severity": "low",
+      "desc": "Complementary glucose lowering; monitor hydration and renal function."
     },
     {
       "drug_a": "Methotrexate",
       "drug_b": "Folic Acid",
       "severity": "none",
-      "desc": "Beneficial interaction."
+      "desc": "Beneficial: folic acid reduces methotrexate toxicity."
     },
     {
-      "drug_a": "Metformin",
-      "drug_b": "Lisinopril",
-      "severity": "none",
-      "desc": "No known interaction."
-    },
-    {
-      "drug_a": "Methotrexate",
-      "drug_b": "NSAID",
-      "severity": "high",
-      "desc": "Increased methotrexate toxicity risk."
-    },
-    {
-      "drug_a": "Lisinopril",
-      "drug_b": "NSAID",
-      "severity": "medium",
-      "desc": "Reduced antihypertensive effect."
+      "drug_a": "Telmisartan",
+      "drug_b": "Empagliflozin",
+      "severity": "low",
+      "desc": "Additive BP lowering; watch for orthostatic hypotension and eGFR dip."
     }
   ]
 }

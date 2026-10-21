@@ -1,35 +1,36 @@
 import { create } from 'zustand';
+import { fetchCalendarEvents, createCalendarEvent } from '../api';
 
-export const useCalendarStore = create((set) => ({
-  selectedDate: new Date(2026, 5, 13), // June 13, 2026
-  events: [
-    {
-      id: 'evt-1',
-      time: '07:00',
-      title: 'Emergency visit',
-      description: 'West camp, Room 312',
-      type: 'emergency',
-      date: '2026-06-13'
-    },
-    {
-      id: 'evt-2',
-      time: '08:12',
-      title: 'Patient Consults',
-      description: 'Ward 3, Critical Care',
-      type: 'consult',
-      date: '2026-06-13'
-    },
-    {
-      id: 'evt-3',
-      time: '09:00',
-      title: 'Telehealth Block',
-      description: 'Follow-up consultations',
-      type: 'video',
-      date: '2026-06-13'
+const isoDate = (d) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+// The physician's schedule comes from the backend: generated from the live patient list,
+// plus any events the doctor adds (persisted in DynamoDB).
+export const useCalendarStore = create((set, get) => ({
+  selectedDate: new Date(),
+  events: [],
+  loadedFrom: null,
+
+  loadEvents: async (aroundDate = new Date()) => {
+    const start = new Date(aroundDate.getFullYear(), aroundDate.getMonth(), 1);
+    start.setDate(start.getDate() - 7);
+    const key = isoDate(start);
+    if (get().loadedFrom === key) return;
+    const { events = [] } = await fetchCalendarEvents(key, 49);
+    set({ events, loadedFrom: key });
+  },
+  setSelectedDate: (date) => {
+    set({ selectedDate: date });
+    get().loadEvents(date);
+  },
+  addEvent: async (event) => {
+    const optimistic = { ...event, id: `evt-${Date.now()}` };
+    set((state) => ({ events: [...state.events, optimistic] }));
+    try {
+      const saved = await createCalendarEvent(event);
+      set((state) => ({ events: state.events.map((e) => (e.id === optimistic.id ? saved : e)) }));
+    } catch (err) {
+      console.warn('Calendar event saved locally only', err);
     }
-  ],
-  setSelectedDate: (date) => set({ selectedDate: date }),
-  addEvent: (event) => set((state) => ({
-    events: [...state.events, { ...event, id: `evt-${Date.now()}` }]
-  }))
+  },
 }));

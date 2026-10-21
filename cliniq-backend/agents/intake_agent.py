@@ -1,25 +1,12 @@
-import google.generativeai as genai
-import os
 import base64
-import json
-from dotenv import load_dotenv
-
-# Load environment variables from the backend root
-env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
-load_dotenv(env_path)
-
-# Check for Gemini API key in multiple common environment variables
-api_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
-genai.configure(api_key=api_key)
+from services import llm
 
 def run_intake_extraction(file_base64: str, file_type: str = "application/pdf", expected_patient_name: str = None, is_new_patient: bool = False, document_type: str = "discharge_summary") -> dict:
     """
     Extracts structured medical data from a document and validates it against the expected patient.
     """
-    print(f"Executing Gemini Intake Agent. New Patient: {is_new_patient}, Expected: {expected_patient_name}...")
+    print(f"Executing Intake Agent. New Patient: {is_new_patient}, Expected: {expected_patient_name}...")
     try:
-        model = genai.GenerativeModel('gemini-flash-latest')
-        
         # Strip data string header if present
         if "," in file_base64:
             file_base64 = file_base64.split(",")[1]
@@ -92,6 +79,8 @@ def run_intake_extraction(file_base64: str, file_type: str = "application/pdf", 
         {{
           "patient_match": "match" | "partial" | "mismatch" | "not_found",
           "extracted_name": "...",
+          "age": {{"value": "<age in years or Not mentioned>", "confidence": 90}},
+          "sex": {{"value": "Male | Female | Not mentioned", "confidence": 90}},
           "document_type": "string",
           "diagnosis": {{"value": "...", "confidence": 95}},
           "medications": {{"value": "...", "confidence": 98}},
@@ -104,21 +93,17 @@ def run_intake_extraction(file_base64: str, file_type: str = "application/pdf", 
         }}
         '''
         
-        response = model.generate_content([
-            prompt,
-            {
-                "mime_type": file_type,
-                "data": file_data
-            }
-        ])
-        
-        content = response.text.strip()
-        if content.startswith("```json"):
-            content = content[7:-3].strip()
-        elif content.startswith("```"):
-            content = content[3:-3].strip()
-            
-        return json.loads(content)
+        # PDFs with a text layer go to the text model; scanned PDFs and photos go to the vision model
+        if "pdf" in file_type.lower():
+            doc_text, page_images = llm.pdf_to_text_and_images(file_data)
+        else:
+            doc_text, page_images = "", [file_data]
+
+        if doc_text:
+            # ~3k tokens: covers a typical 1-3 page discharge summary and stays inside
+            # Groq's free-tier per-minute token budget
+            prompt += f"\n\nDOCUMENT TEXT:\n{doc_text[:12000]}"
+        return llm.generate_json(prompt, images=page_images or None, temperature=0.1)
         
     except Exception as e:
         err_str = str(e)

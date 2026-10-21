@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import os
 from services.pdf_service import pdf_service
+from services.aws import archive_to_s3
 
 router = APIRouter(prefix="/api/export", tags=["export"])
 
@@ -20,6 +21,8 @@ def export_comprehensive_report(req: ExportRequest):
             raise HTTPException(status_code=500, detail="PDF generation failed.")
         
         filename = f"ClinIQ_Report_{req.patient_id}.pdf"
+        with open(pdf_path, "rb") as pdf_file:
+            archive_to_s3(f"reports/{req.patient_id}", pdf_file.read(), "application/pdf", filename)
         return FileResponse(
             path=pdf_path,
             filename=filename,

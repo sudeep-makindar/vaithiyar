@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { normalizeDrugName } from '../constants/drugNameMap';
 import { normalizeClinicalTerm } from '../constants/clinicalTermMap';
+import { BASE_API } from '../config.js';
+import { usePatientStore } from '../stores/patientStore';
 
 export const useVoice = (onActionExecuted) => {
   const [isListening, setIsListening] = useState(false);
@@ -190,7 +192,7 @@ export const useVoice = (onActionExecuted) => {
     formData.append("context", context);
 
     try {
-      const res = await fetch("https://dry-frog-85.loca.lt/api/voice/transcribe", {
+      const res = await fetch(`${BASE_API}/voice/transcribe`, {
         method: "POST",
         body: formData
       });
@@ -227,13 +229,13 @@ export const useVoice = (onActionExecuted) => {
   const sendCommand = async (commandText) => {
     try {
       const page = window.location.pathname.split('/').pop() || 'dashboard';
-      const res = await fetch("https://dry-frog-85.loca.lt/api/voice/command", {
+      const res = await fetch(`${BASE_API}/voice/command`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           transcribed_text: commandText,
           current_page: page,
-          patient_id: "P-00142" // Demo patient
+          patient_id: usePatientStore.getState().currentPatient?.id || null
         })
       });
       const actionData = await res.json();
@@ -255,14 +257,44 @@ export const useVoice = (onActionExecuted) => {
     }
   };
 
+  // Amazon Polly neural voices (served by /voice/synthesize on AWS); browser TTS otherwise
+  const pollyAudioRef = useRef(null);
+  const POLLY_LANGS = ['en-IN', 'hi-IN', 'en-US', 'en-GB'];
+
+  const speak = async (text, languageCode = 'en-US') => {
+    stopSpeaking();
+
+    if (POLLY_LANGS.includes(languageCode)) {
+      try {
+        const res = await fetch(`${BASE_API}/voice/synthesize`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, language_code: languageCode })
+        });
+        const data = await res.json();
+        if (data.audio_base64) {
+          const audio = new Audio(`data:audio/mp3;base64,${data.audio_base64}`);
+          audio.onplay = () => setIsSpeaking(true);
+          audio.onended = () => setIsSpeaking(false);
+          audio.onerror = () => setIsSpeaking(false);
+          pollyAudioRef.current = audio;
+          await audio.play();
+          return;
+        }
+      } catch (err) {
+        console.warn("Polly synthesis unavailable, using browser voice.", err);
+      }
+    }
+
+    speakWithBrowser(text, languageCode);
+  };
+
   // Native Speech Synthesis / TTS with high-quality voice select
-  const speak = (text, languageCode = 'en-US') => {
+  const speakWithBrowser = (text, languageCode) => {
     if (!window.speechSynthesis) {
       setError("Text to speech not supported in this browser.");
       return;
     }
-
-    stopSpeaking();
 
     // Map language code to Neural2 equivalences
     const utterance = new SpeechSynthesisUtterance(text);
@@ -295,6 +327,11 @@ export const useVoice = (onActionExecuted) => {
   };
 
   const stopSpeaking = () => {
+    if (pollyAudioRef.current) {
+      pollyAudioRef.current.pause();
+      pollyAudioRef.current = null;
+      setIsSpeaking(false);
+    }
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
@@ -304,7 +341,7 @@ export const useVoice = (onActionExecuted) => {
   const translateAndSpeak = async (text, targetLanguage) => {
     setIsProcessing(true);
     try {
-      const res = await fetch("https://dry-frog-85.loca.lt/api/voice/translate", {
+      const res = await fetch(`${BASE_API}/voice/translate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

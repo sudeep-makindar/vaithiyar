@@ -8,19 +8,25 @@ const PreConsultBanner = ({ patient, setCurrentView }) => {
 
   const riskColor = patient.riskScore > 60 ? T.red : T.green;
 
-  // Placeholder static data for the 3-column sub-grid
-  // You could extend mockData to provide these precisely.
-  const keyFindings = [
-    patient.consultBrief,
-    'Patient has missed recent lab appointments.',
-    'Current medication showing partial efficacy.'
-  ];
-  const redFlags = patient.riskScore > 60
-    ? ['High uncontrolled BP detected.', 'Missed 3 doses this week.']
-    : ['Mild fatigue reported.'];
-  const suggestedTests = patient.riskScore > 60
-    ? ['Comprehensive Metabolic Panel', 'HbA1c test', 'Lipid Panel']
-    : ['Routine blood work'];
+  // Derived from the patient's live alerts and abnormal labs
+  const alerts = patient.clinicalPatterns || [];
+  const labAlerts = alerts.filter(a => a.source === 'lab_engine');
+  const keyFindings = [patient.consultBrief, ...labAlerts.slice(0, 2).map(a => a.description)].filter(Boolean);
+  const high = alerts.filter(a => a.severity === 'HIGH');
+  const redFlags = (high.length ? high : alerts.filter(a => a.severity === 'MEDIUM'))
+    .slice(0, 3).map(a => a.description);
+  if (!redFlags.length) redFlags.push('No red flags in recent monitoring.');
+  const TESTS = {
+    HbA1c: 'HbA1c (3-monthly)', Glucose: 'Fasting glucose / CGM review', Creatinine: 'Renal function + electrolytes',
+    eGFR: 'Renal function + electrolytes', Potassium: 'Renal function + electrolytes', BNP: 'NT-proBNP + echocardiogram',
+    LDL: 'Fasting lipid panel', FEV1: 'Spirometry', SpO2: 'Arterial blood gas', ALT: 'LFT + FibroScan', AST: 'LFT + FibroScan',
+    ESR: 'ESR / CRP', CRP: 'ESR / CRP', TSH: 'Thyroid function', Hemoglobin: 'CBC + iron studies',
+    BP_Systolic: '24-h ambulatory BP', HeartRate: '12-lead ECG',
+  };
+  const suggestedTests = [...new Set(labAlerts.map(a => TESTS[a.lab]).filter(Boolean))].slice(0, 3);
+  if (!suggestedTests.length) suggestedTests.push('Routine annual blood work');
+  const dxCount = patient.diagnosis?.length || 0;
+  const comorbidityPairs = (dxCount * (dxCount - 1)) / 2;
 
   return (
     <div className="fadeIn" style={{
@@ -119,7 +125,7 @@ const PreConsultBanner = ({ patient, setCurrentView }) => {
               COMORBIDITY
             </div>
             <div style={{ fontSize: '18px', fontWeight: '800', color: '#A855F7', fontFamily: T.fontDisplay }}>
-              {patient.id === 'P-00142' ? '3' : patient.id === 'P-00399' ? '5' : '1'} <span style={{ fontSize: '10px', fontWeight: '500', opacity: 0.8 }}>pairs</span>
+              {comorbidityPairs} <span style={{ fontSize: '10px', fontWeight: '500', opacity: 0.8 }}>pairs</span>
             </div>
           </div>
 

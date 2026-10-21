@@ -4,6 +4,7 @@ import GlassCard from '../ui/GlassCard';
 import GlowBadge from '../ui/GlowBadge';
 import StreamingText from '../ui/StreamingText';
 import useSSEStream from '../../hooks/useSSEStream';
+import { BASE_API } from '../../config.js';
 
 const ORGANS = [
   { id: 'brain', name: 'Brain', cx: 50, cy: 22, color: '#A855F7', biomarkers: ['Cognition'] },
@@ -30,7 +31,7 @@ const BodyMapContext = ({ patient }) => {
     organSSE.setLoading(true);
 
     try {
-      await organSSE.startStream(`https://dry-frog-85.loca.lt/api/patient/${patient.id}/organ-assessment`, {
+      await organSSE.startStream(`${BASE_API}/patient/${patient.id}/organ-assessment`, {
         organ: organ.id
       });
     } catch (err) {
@@ -49,7 +50,7 @@ const BodyMapContext = ({ patient }) => {
 
       if (firstLine.startsWith('[RISK:')) {
         try {
-          risk = parseInt(firstLine.replace('[', '').replace(']', '').split(':')[1].strip()) || 50;
+          risk = parseInt(firstLine.replace('[', '').replace(']', '').split(':')[1].trim()) || 50;
         } catch(e) {
           risk = 50;
         }

@@ -1,9 +1,10 @@
-from mock_data import PATIENTS, DRUG_INTERACTIONS, GUIDELINES
+from mock_data import DRUG_INTERACTIONS, GUIDELINES
+from services.store import store
 
-# All functions return dicts that Gemini can read as tool results
+# All functions return dicts that the LLM can read as tool results
 
 def get_patient_case_sheet(patient_id: str) -> dict:
-    patient = next((p for p in PATIENTS if p['id'] == patient_id), None)
+    patient = store.get_patient(patient_id)  # never fall back to stale mock records
     if not patient: return {'error': 'Patient not found'}
     return patient
 
@@ -40,9 +41,10 @@ def extract_lab_trends(patient_id: str, test_name: str, date_range: str = 'all')
 
 def check_drug_interactions(medication_list: list) -> dict:
     interactions = []
-    med_names = [m['name'] if isinstance(m, dict) else m for m in medication_list]
-    for pair in DRUG_INTERACTIONS:
-        if pair['drug_a'] in med_names and pair['drug_b'] in med_names:
+    med_names = [(m['name'] if isinstance(m, dict) else str(m)).lower() for m in medication_list]
+    taking = lambda drug: any(drug.lower() in name or name in drug.lower() for name in med_names)  # noqa: E731
+    for pair in store.get_interactions() or DRUG_INTERACTIONS:
+        if taking(pair['drug_a']) and taking(pair['drug_b']):
             interactions.append(pair)
     return { 'interactions': interactions, 'count': len(interactions) }
 

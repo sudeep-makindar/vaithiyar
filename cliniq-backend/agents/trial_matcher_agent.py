@@ -136,13 +136,12 @@ def rule_based_screen(patient: dict, trial: dict) -> dict:
     }
 
 
-async def screen_trials_with_gemini(patient: dict, studies: list) -> dict:
+async def screen_trials_with_ai(patient: dict, studies: list) -> dict:
     """
-    Gemini-powered trial screening using gemini-2.5-flash with thinking disabled for speed.
+    LLM-powered trial screening (Groq), with a deterministic rule-based fallback.
     """
-    import google.generativeai as genai
-    api_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
-    genai.configure(api_key=api_key)
+    import asyncio
+    from services import llm
 
     try:
         diagnoses = patient.get("diagnosis", [])
@@ -154,8 +153,6 @@ async def screen_trials_with_gemini(patient: dict, studies: list) -> dict:
 
         extracted_trials = extract_trials_from_studies(studies)
 
-        model = genai.GenerativeModel('gemini-2.5-flash')
-
         prompt = f"""You are a clinical trial eligibility screener. Evaluate the patient against each trial and return a JSON array.
 
 Patient: Age {age}, Sex {sex}, Diagnoses: {', '.join(diagnoses)}
@@ -163,20 +160,11 @@ Patient: Age {age}, Sex {sex}, Diagnoses: {', '.join(diagnoses)}
 Trials:
 {json.dumps(extracted_trials, indent=2)}
 
-Return ONLY a JSON array. Each object must have: nctId, briefTitle, phases, eligible ("likely"|"possible"|"unlikely"), confidence (0-1), match_reasons (list), disqualifiers (list), priority_score (1-10)."""
+Return ONLY a JSON object of the form {{"trials": [...]}}. Each trial object must have: nctId, briefTitle, phases, eligible ("likely"|"possible"|"unlikely"), confidence (0-1), match_reasons (list), disqualifiers (list), priority_score (1-10)."""
 
-        res = model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
-                response_mime_type="application/json",
-                temperature=0.1
-            )
-        )
-
-        try:
-            evaluated_trials = json.loads(res.text)
-        except json.JSONDecodeError as e:
-            return {"error": f"Failed to parse AI response: {e}"}
+        text = await asyncio.to_thread(llm.generate, prompt, json_mode=True, temperature=0.1)
+        parsed = llm.parse_json(text)
+        evaluated_trials = parsed.get("trials", []) if isinstance(parsed, dict) else parsed
 
         evaluated_trials.sort(key=lambda x: x.get("priority_score", 0), reverse=True)
 
@@ -187,7 +175,7 @@ Return ONLY a JSON array. Each object must have: nctId, briefTitle, phases, elig
         }
 
     except Exception as e:
-        print(f"Gemini trial screening failed: {e}. Falling back to rule-based screening.")
+        print(f"AI trial screening failed: {e}. Falling back to rule-based screening.")
         try:
             extracted_trials = extract_trials_from_studies(studies)
             evaluated_trials = []

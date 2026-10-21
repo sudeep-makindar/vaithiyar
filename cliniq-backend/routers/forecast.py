@@ -5,9 +5,32 @@ import json
 import time
 import asyncio
 from services.supabase_service import db_service
-from services.gemini_service import gemini_service
+from services.ai_service import ai_service
+from services.store import store
 
 router = APIRouter(prefix="/api/forecast", tags=["forecast"])
+
+def _obj(props: dict) -> dict:
+    return {"type": "object", "properties": props, "required": list(props), "additionalProperties": False}
+
+_NUM, _STR, _INT = {"type": "number"}, {"type": "string"}, {"type": "integer"}
+FORECAST_JSON_SCHEMA = _obj({
+    "patient_id": _STR,
+    "generated_at": _STR,
+    "conditions": {"type": "array", "items": _obj({
+        "condition": _STR, "icd_code": _STR,
+        "trajectory": {"type": "array", "items": _obj({
+            "month": _INT, "risk": _NUM, "confidence_low": _NUM, "confidence_high": _NUM, "key_driver": _STR})},
+    })},
+    "forecast_drivers": {"type": "array", "items": _obj({
+        "biomarker": _STR, "contribution_pct": _NUM,
+        "direction": {"type": "string", "enum": ["worsening", "stable", "improving"]}})},
+    "milestones": {"type": "array", "items": _obj({
+        "month": _INT, "condition": _STR, "event": _STR, "probability": _NUM})},
+    "intervention_impacts": {"type": "array", "items": _obj({
+        "intervention": _STR, "risk_delta": _NUM, "affected_conditions": {"type": "array", "items": _STR}})},
+})
+
 
 class ForecastRequest(BaseModel):
     patient_id: str
@@ -44,24 +67,19 @@ TRAJECTORY_SCHEMA = """
 """
 
 def get_patient_snapshot(patient_id: str) -> str:
-    # Read from database.json
-    db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database.json")
     try:
-        with open(db_path, 'r') as f:
-            db = json.load(f)
-            patients = db.get("patients", [])
-            patient = next((p for p in patients if p["id"] == patient_id), None)
-            if patient:
-                return json.dumps({
-                    "id": patient["id"],
-                    "name": patient["name"],
-                    "age": patient["age"],
-                    "sex": patient["sex"],
-                    "diagnosis": patient["diagnosis"],
-                    "medications": patient["medications"],
-                    "adherenceScore": patient["adherenceScore"],
-                    "labs_latest": {k: v[-1] if v else None for k, v in patient.get("labs", {}).items()}
-                })
+        patient = store.get_patient(patient_id)
+        if patient:
+            return json.dumps({
+                "id": patient["id"],
+                "name": patient["name"],
+                "age": patient["age"],
+                "sex": patient["sex"],
+                "diagnosis": patient["diagnosis"],
+                "medications": patient["medications"],
+                "adherenceScore": patient["adherenceScore"],
+                "labs_latest": {k: v[-1] if v else None for k, v in patient.get("labs", {}).items()}
+            })
     except Exception as e:
         print(f"Error loading patient snapshot: {e}")
     return f"{{'patient_id': '{patient_id}'}}"
@@ -88,20 +106,23 @@ async def get_trajectory(req: ForecastRequest):
             
         return StreamingResponse(stream_cache(), media_type="text/event-stream")
 
-    print(f"No cache found for {req.patient_id}. Querying live Gemini forecasting engine...")
+    print(f"No cache found for {req.patient_id}. Querying live AI forecasting engine...")
     patient_snapshot = get_patient_snapshot(req.patient_id)
     
     prompt = (
         "You are a clinical AI forecasting engine. Given the following patient data, generate a 12-month disease progression forecast in strict JSON format matching this schema:\n"
         f"{TRAJECTORY_SCHEMA}\n"
         f"Patient data:\n{patient_snapshot}\n"
-        "For each active condition, project monthly risk scores from 0.0 to 1.0 with confidence intervals. Identify the top 5 biomarker drivers with percentage contributions. Predict clinical milestones with probabilities. Calculate risk delta for each intervention. Be scientifically grounded. Return only valid JSON, no prose."
+        "For each active condition, project monthly risk scores from 0.0 to 1.0 with confidence intervals. Identify the top 5 biomarker drivers with percentage contributions. Predict clinical milestones with probabilities. Calculate risk delta for each intervention. Be scientifically grounded. "
+        "REQUIRED: the JSON must contain all four top-level arrays: conditions (the 3 most important active conditions at most, "
+        "each with 7 trajectory points at months 0, 2, 4, 6, 8, 10, 12; keep key_driver under 8 words), "
+        "forecast_drivers (exactly 5), milestones (3-4, months 1-12) and intervention_impacts (exactly 4 realistic options for THIS patient, "
+        "risk_delta negative between -0.05 and -0.30). Return only valid JSON, no prose."
     )
     
-    async def stream_live_gemini():
+    async def stream_live_ai():
         full_text = ""
-        # Read from generator
-        for chunk in gemini_service.stream_content(prompt):
+        for chunk in ai_service.stream_json(prompt, schema=FORECAST_JSON_SCHEMA):
             full_text += chunk
             yield f"data: {json.dumps(chunk)}\n\n"
             await asyncio.sleep(0.02)
@@ -123,16 +144,22 @@ async def get_trajectory(req: ForecastRequest):
             
         yield "data: [DONE]\n\n"
 
-    return StreamingResponse(stream_live_gemini(), media_type="text/event-stream")
+    return StreamingResponse(stream_live_ai(), media_type="text/event-stream")
 
 @router.post("/simulate")
 async def simulate_trajectory(req: SimulationRequest):
     """
-    Simulate trajectory based on active interventions. Enforces live Gemini call to highlight the 'wow' moment.
+    Simulate trajectory based on active interventions. Enforces live AI call to highlight the 'wow' moment.
     """
-    print(f"Simulating interventions {req.interventions} for patient {req.patient_id} via live Gemini...")
+    print(f"Simulating interventions {req.interventions} for patient {req.patient_id} via live AI...")
     patient_snapshot = get_patient_snapshot(req.patient_id)
     
+    # Keep condition names identical to the baseline forecast so the UI can overlay the curves
+    baseline = db_service.get_forecast_cache(req.patient_id)
+    baseline_conditions = [c.get("condition") for c in (baseline or {}).get("trajectory", []) if c.get("condition")]
+    baseline_hint = (f"Use exactly these condition names, in this order: {json.dumps(baseline_conditions)}. "
+                     if baseline_conditions else "")
+
     prompt = (
         "You are a clinical AI forecasting engine. Given the following patient data, generate a 12-month disease progression forecast in strict JSON format matching this schema:\n"
         f"{TRAJECTORY_SCHEMA}\n"
@@ -140,11 +167,14 @@ async def simulate_trajectory(req: SimulationRequest):
         f"SIMULATION INTERVENTIONS TO APPLY: {', '.join(req.interventions)}.\n"
         "Rigorously adjust the risk trajectory scores downward for conditions affected by these interventions. "
         "For example, adding Metformin should drop Type 2 Diabetes progression risk by ~20-30% over 12 months. "
+        f"{baseline_hint}"
+        "Use at most 3 conditions, each with 7 trajectory points at months 0, 2, 4, 6, 8, 10, 12; key_driver under 8 words; "
+        "include 5 forecast_drivers, 3-4 milestones and the applied interventions in intervention_impacts. "
         "Return the full JSON structure including the updated trajectories. Return only valid JSON, no prose."
     )
     
     async def stream_simulation():
-        for chunk in gemini_service.stream_content(prompt):
+        for chunk in ai_service.stream_json(prompt, schema=FORECAST_JSON_SCHEMA):
             yield f"data: {json.dumps(chunk)}\n\n"
             await asyncio.sleep(0.02)
         yield "data: [DONE]\n\n"

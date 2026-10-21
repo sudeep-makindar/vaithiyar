@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BASE_API } from '../../config.js';
 
 const VisionScanner = ({ patient, onScanResult }) => {
   const [frontImage, setFrontImage] = useState(null);
@@ -34,7 +35,7 @@ const VisionScanner = ({ patient, onScanResult }) => {
     formData.append("back_image", backImage);
 
     try {
-      const response = await fetch('https://dry-frog-85.loca.lt/api/analyze-pill', {
+      const response = await fetch(`${BASE_API}/analyze-pill`, {
         method: 'POST',
         body: formData,
       });

@@ -1,16 +1,6 @@
-import os
-import google.generativeai as genai
-from dotenv import load_dotenv
+from services import llm
 from tools.case_sheet import *
 from tools.pill_guard import *
-
-# Load environment variables from the backend root (.env is in the parent of the agents directory)
-env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
-load_dotenv(env_path)
-
-# Check for Gemini API key in multiple common environment variables
-api_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
-genai.configure(api_key=api_key)
 
 TOOL_DEFINITIONS = [{ 'function_declarations': [
   { 'name': 'get_patient_case_sheet',
@@ -79,6 +69,9 @@ TOOL_DEFINITIONS = [{ 'function_declarations': [
       'week_start': { 'type': 'string' }
     }, 'required': ['patient_id', 'week_start'] } },
 ]}]
+
+# Groq uses the OpenAI tool schema
+OPENAI_TOOLS = [{"type": "function", "function": decl} for decl in TOOL_DEFINITIONS[0]["function_declarations"]]
 
 TOOL_MAP = {
   'get_patient_case_sheet': get_patient_case_sheet,
@@ -252,14 +245,12 @@ def local_query_fallback(query: str, patient_id: str) -> str:
     )
 
 def run_nl_query(query: str, patient_id: str) -> str:
-    print(f"Executing Gemini Query Agent for {patient_id}... Query: {query}")
+    print(f"Executing Query Agent for {patient_id}... Query: {query}")
     try:
-        model = genai.GenerativeModel(
-            model_name='gemini-2.5-flash',
-            tools=TOOL_DEFINITIONS
-        )
+        from datetime import date
         system = (
-            f"You are ClinIQ, a physician AI co-pilot. Patient context ID: {patient_id}. "
+            f"You are ClinIQ, a physician AI co-pilot. Today is {date.today():%d %B %Y}. Patient context ID: {patient_id}. "
+            "Lab series are monthly and the last reading is the most recent (this month). Only quote values returned by the tools. "
             "Your goal is to extract, summarize, and surface relevant clinical insights from the patient case sheet. "
             "Use the available tools to answer clinical questions, detect patterns, or provide a 'Second Opinion'. "
             "When providing a Second Opinion, rigorously scan for corroborating evidence (supporting the physician's hypothesis) "
@@ -267,48 +258,7 @@ def run_nl_query(query: str, patient_id: str) -> str:
             "Be extremely specific, cited (mention values/dates), and concise. Assume the user is an expert doctor. "
             "Frame all outputs as insights for physician review, never as final clinical decisions."
         )
-        chat = model.start_chat()
-        response = chat.send_message(f"{system} Query: {query}")
-
-        # Multi-step Function Call Loop
-        loop_counter = 0
-        while loop_counter < 10:
-            loop_counter += 1
-            
-            # Check if current response has a function call
-            if not response.candidates or not response.candidates[0].content.parts:
-                break
-                
-            fn_call = None
-            for part in response.candidates[0].content.parts:
-                if hasattr(part, 'function_call') and part.function_call.name:
-                    fn_call = part.function_call
-                    break
-            
-            if not fn_call:
-                break
-
-            args_dict = dict(fn_call.args) if fn_call.args else {}
-            
-            if fn_call.name in TOOL_MAP:
-                try:
-                    fn_result = TOOL_MAP[fn_call.name](**args_dict)
-                except Exception as ef:
-                    fn_result = {'error': str(ef)}
-            else:
-                fn_result = {'error': f'Function {fn_call.name} not available'}
-
-            # Send the tool output back to the model
-            response = chat.send_message(
-                genai.protos.Content(
-                parts=[genai.protos.Part(
-                    function_response=genai.protos.FunctionResponse(
-                        name=fn_call.name,
-                        response={'result': str(fn_result)}
-                    ))])
-            )
-            
-        return response.text
+        return llm.run_tools(f"Query: {query}", OPENAI_TOOLS, TOOL_MAP, system=system)
     except Exception as e:
         print(f"Error executing Query Agent: {str(e)}")
         try:
@@ -320,7 +270,7 @@ def run_nl_query(query: str, patient_id: str) -> str:
             if '429' in err_str or 'quota' in err_str.lower() or 'rate' in err_str.lower():
                 return (
                     "**ClinIQ AI \u2014 Offline Mode**\n\n"
-                    "The Gemini AI service is temporarily rate-limited (free-tier quota reached). "
+                    "The AI service is temporarily rate-limited (free-tier quota reached). "
                     "Your query has been noted but cannot be processed live right now.\n\n"
                     "**Please try again in ~1 minute.** Your clinical data is safe and no information was lost."
                 )

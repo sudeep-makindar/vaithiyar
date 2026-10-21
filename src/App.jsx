@@ -14,6 +14,7 @@ import TrialMatcherPage from './pages/TrialMatcherPage';
 import { usePatientStore } from './stores/patientStore';
 import { T } from './tokens';
 import ShaderBackground from './components/ShaderBackground';
+import { BASE_API } from './config.js';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ function AppContent() {
 
   const handleDeletePatient = async (id) => {
     try {
-      await fetch(`https://dry-frog-85.loca.lt/api/patient/${id}`, { method: 'DELETE' });
+      await fetch(`${BASE_API}/patient/${id}`, { method: 'DELETE' });
       await refreshPatients();
       navigate('/registry');
     } catch (err) {

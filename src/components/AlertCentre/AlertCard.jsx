@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useSSEStream from '../../hooks/useSSEStream';
 import StreamingText from '../ui/StreamingText';
+import { BASE_API } from '../../config.js';
 
 const AlertCard = ({ alert, isAcknowledged, onAck, colorIndex }) => {
   const { data, loading, startStream } = useSSEStream();
@@ -11,7 +12,7 @@ const AlertCard = ({ alert, isAcknowledged, onAck, colorIndex }) => {
     if (data) return;
     
     try {
-      await startStream('https://dry-frog-85.loca.lt/api/alerts/explain', {
+      await startStream(`${BASE_API}/alerts/explain`, {
         alert_id: alert.id,
         patient_id: alert.patientId,
         description: alert.description

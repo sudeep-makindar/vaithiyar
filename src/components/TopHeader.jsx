@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useUserStore } from '../stores/userStore';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { usePatientStore } from '../stores/patientStore';
 
 const getHeaderTitle = (pathname) => {
   if (pathname === '/') return 'Physician Overview';
@@ -20,6 +21,22 @@ const TopHeader = () => {
   const location = useLocation();
   const title = getHeaderTitle(location.pathname);
   const { doctorName } = useUserStore();
+  const navigate = useNavigate();
+
+  // Notifications = the most recent alerts across all patients (from the live patient store)
+  const { patients } = usePatientStore();
+  const sevRank = { HIGH: 3, MEDIUM: 2, LOW: 1, INFO: 0 };
+  const notifications = patients
+    .flatMap(p => (p.clinicalPatterns || []).map(a => ({ ...a, patientName: p.name, patientId: p.id })))
+    .filter(a => a.timestamp)
+    .sort((a, b) => (sevRank[b.severity] - sevRank[a.severity]) || b.timestamp.localeCompare(a.timestamp))
+    .slice(0, 8);
+  const notifStyle = {
+    HIGH: ['bg-red-50 border border-red-100', 'text-red-700'],
+    MEDIUM: ['bg-brand-yellow/20 border border-brand-yellow/30', 'text-brand-yellow-dark'],
+    LOW: ['bg-blue-50 border border-blue-100', 'text-blue-700'],
+    INFO: ['bg-blue-50 border border-blue-100', 'text-blue-700'],
+  };
 
   // Modal states
   const [showNotifications, setShowNotifications] = useState(false);
@@ -71,7 +88,9 @@ const TopHeader = () => {
           className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:bg-gray-800 transition-colors relative cursor-pointer"
         >
           <span className="material-symbols-outlined text-sm">notifications</span>
-          <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-brand-pink rounded-full border border-black"></span>
+          {notifications.some(n => n.severity === 'HIGH') && (
+            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-brand-pink rounded-full border border-black"></span>
+          )}
         </button>
         
         <button 
@@ -105,20 +124,25 @@ const TopHeader = () => {
             </h3>
             
             <div className="space-y-4 max-h-60 overflow-y-auto pr-1">
-              <div className="p-3 bg-red-50 border border-red-100 rounded-xl">
-                <h4 className="text-xs font-extrabold text-red-700 uppercase">BNP Spike High Alert</h4>
-                <p className="text-xs text-gray-700 mt-1 font-semibold">Mrs. Sarasu (P-00399) BNP spike suggests impending CHF decompensation.</p>
-              </div>
-              
-              <div className="p-3 bg-brand-yellow/20 border border-brand-yellow/30 rounded-xl">
-                <h4 className="text-xs font-extrabold text-brand-yellow-dark uppercase font-sans">Lab Trend Alert</h4>
-                <p className="text-xs text-gray-700 mt-1 font-semibold">Arjun Mehta (P-00142) HbA1c increased significantly to 9.5%.</p>
-              </div>
-
-              <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl">
-                <h4 className="text-xs font-extrabold text-blue-700 uppercase">Intake Stream Loaded</h4>
-                <p className="text-xs text-gray-700 mt-1 font-semibold">Patient clinical report parsed successfully by Intake Engine.</p>
-              </div>
+              {notifications.length === 0 && (
+                <p className="text-xs text-gray-500 font-semibold">No active alerts.</p>
+              )}
+              {notifications.map((n, i) => {
+                const [box, title] = notifStyle[n.severity] || notifStyle.INFO;
+                return (
+                  <div
+                    key={`${n.patientId}-${i}`}
+                    onClick={() => { setShowNotifications(false); navigate(`/patient/${n.patientId}`); }}
+                    className={`p-3 rounded-xl cursor-pointer hover:opacity-90 ${box}`}
+                  >
+                    <div className="flex justify-between items-center gap-2">
+                      <h4 className={`text-xs font-extrabold uppercase ${title}`}>{n.type}</h4>
+                      <span className="text-[10px] text-gray-500 font-bold whitespace-nowrap">{n.time}</span>
+                    </div>
+                    <p className="text-xs text-gray-700 mt-1 font-semibold">{n.patientName} ({n.patientId}): {n.description}</p>
+                  </div>
+                );
+              })}
             </div>
 
             <button 
@@ -204,7 +228,7 @@ const TopHeader = () => {
                 <span className="font-extrabold text-black">ClinIQ+</span> is a state-of-the-art Clinical Intelligence Co-pilot platform designed for physicians.
               </p>
               <div className="border-t border-gray-100 pt-3 space-y-1 text-[11px]">
-                <p>• <span className="font-bold text-black">Version:</span> 1.2.0 (Build 2026.06.13)</p>
+                <p>• <span className="font-bold text-black">Version:</span> 2.0.0 (AWS Serverless · {__BUILD_DATE__})</p>
                 <p>• <span className="font-bold text-black">Developer:</span> Google DeepMind Advanced Coding Team</p>
                 <p>• <span className="font-bold text-black">Client ID:</span> {doctorName} (Physician)</p>
               </div>

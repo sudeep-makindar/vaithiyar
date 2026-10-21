@@ -6,6 +6,7 @@ import AdherenceCalendar from '../components/PillGuard/AdherenceCalendar';
 import PrescriptionReference from '../components/PillGuard/PrescriptionReference';
 import DrugInteractionGraph from '../components/charts/DrugInteractionGraph';
 import useSSEStream from '../hooks/useSSEStream';
+import { BASE_API } from '../config.js';
 
 const PillGuard = ({ patient }) => {
   const [analysisResult, setAnalysisResult] = useState(null);
@@ -37,7 +38,7 @@ const PillGuard = ({ patient }) => {
     setMissedCellInfo({ drugName });
     missedSSE.setData('');
     try {
-      await missedSSE.startStream('https://dry-frog-85.loca.lt/api/pillguard/missed-dose-impact', {
+      await missedSSE.startStream(`${BASE_API}/pillguard/missed-dose-impact`, {
         patient_id: patient.id,
         drug_name: drugName
       });

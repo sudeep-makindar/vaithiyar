@@ -164,7 +164,7 @@ class SupabaseService:
                 }
         return None
 
-    def set_forecast_cache(self, patient_id: str, data: dict, expires_in_seconds: int = 3600):
+    def set_forecast_cache(self, patient_id: str, data: dict, expires_in_seconds: int = 86400):
         import uuid
         conn = self._get_conn()
         cursor = conn.cursor()
@@ -211,7 +211,7 @@ class SupabaseService:
                 }
         return None
 
-    def set_comorbidity_cache(self, patient_id: str, data: dict, expires_in_seconds: int = 3600):
+    def set_comorbidity_cache(self, patient_id: str, data: dict, expires_in_seconds: int = 86400):
         import uuid
         conn = self._get_conn()
         cursor = conn.cursor()
@@ -456,5 +456,11 @@ class SupabaseService:
         conn.commit()
         conn.close()
 
-# Export a single global instance
-db_service = SupabaseService()
+# Export a single global instance: DynamoDB on AWS, SQLite locally
+from services.aws import STORAGE_BACKEND
+
+if STORAGE_BACKEND == "dynamodb":
+    from services.dynamo_service import DynamoCacheService
+    db_service = DynamoCacheService()
+else:
+    db_service = SupabaseService()

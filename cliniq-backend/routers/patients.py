@@ -5,8 +5,10 @@ import json
 import asyncio
 import os
 from services.supabase_service import db_service
-from services.gemini_service import gemini_service
+from services.ai_service import ai_service
 from services.pdf_service import pdf_service
+from services.store import store
+from services.aws import archive_to_s3
 
 router = APIRouter(prefix="/api/patient", tags=["patients"])
 
@@ -14,12 +16,8 @@ class OrganAssessmentRequest(BaseModel):
     organ: str
 
 def get_patient_data(patient_id: str) -> dict:
-    db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database.json")
     try:
-        with open(db_path, 'r') as f:
-            db = json.load(f)
-            patients = db.get("patients", [])
-            return next((p for p in patients if p["id"] == patient_id), None)
+        return store.get_patient(patient_id)
     except Exception as e:
         print(f"Error loading patient data: {e}")
     return None
@@ -66,7 +64,7 @@ async def organ_assessment(id: str, req: OrganAssessmentRequest):
     if cached:
         print(f"Serving organ assessment for {organ} of patient {id} from SQLite Cache...")
         async def stream_cache():
-            # Construct a response matching what the live gemini stream would produce,
+            # Construct a response matching what the live AI stream would produce,
             # which is: "[RISK: <score>] \n\n <summary text>"
             response_text = f"[RISK: {cached['risk_score']}]\n\n{cached['summary_text']}"
             chunk_size = 30
@@ -77,7 +75,7 @@ async def organ_assessment(id: str, req: OrganAssessmentRequest):
             yield "data: [DONE]\n\n"
         return StreamingResponse(stream_cache(), media_type="text/event-stream")
 
-    print(f"No cache found for {organ} assessment of patient {id}. Querying live Gemini triage...")
+    print(f"No cache found for {organ} assessment of patient {id}. Querying live AI triage...")
     prompt = (
         f"You are a clinical specialist evaluating patient organ health. "
         f"Patient: {patient['name']}, {patient['age']}y. Diagnoses: {', '.join(patient['diagnosis'])}. "
@@ -91,7 +89,7 @@ async def organ_assessment(id: str, req: OrganAssessmentRequest):
 
     async def stream_live():
         full_text = ""
-        for chunk in gemini_service.stream_content(prompt):
+        for chunk in ai_service.stream_content(prompt):
             full_text += chunk
             yield f"data: {json.dumps(chunk)}\n\n"
             await asyncio.sleep(0.02)
@@ -136,6 +134,8 @@ def get_patient_summary_pdf(id: str):
         
         formatted_name = "".join(c if c.isalnum() else "_" for c in patient["name"].lower())
         filename = f"patient_{formatted_name}_summary.pdf"
+        with open(pdf_path, "rb") as pdf_file:
+            archive_to_s3(f"reports/{id}", pdf_file.read(), "application/pdf", filename)
         headers = {
             "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
             "Pragma": "no-cache"

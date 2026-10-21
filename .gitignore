@@ -29,3 +29,16 @@ __pycache__/
 *.py[cod]
 venv/
 .venv/
+
+# Generated PDF charts / reports
+temp_charts/
+
+# AWS build artifacts
+infra/cdk.out/
+infra/.venv/
+cliniq-backend/.lambda-build/
+infra/.origin-secret
+infra/outputs.json
+
+# Slide deck lives in its own repo (vaithiyar-presentation)
+presentation/

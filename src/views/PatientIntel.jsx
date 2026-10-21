@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { T } from '../tokens';
 import TopHeader from '../components/TopHeader';
 import BodyMapContext from '../components/PatientIntel/BodyMapContext';
@@ -17,9 +17,18 @@ import MicButton from '../components/voice/MicButton';
 import VoiceResultCard from '../components/voice/VoiceResultCard';
 import TrialMatcherPanel from '../components/PatientIntel/TrialMatcherPanel';
 import { usePatientStore } from '../stores/patientStore';
+import { BASE_API } from '../config.js';
 
 const PatientIntel = ({ patients = [], patient, setCurrentPatient, setCurrentView, startInRegistry, onDeletePatient }) => {
   const navigate = useNavigate();
+  const { id: routeId } = useParams();
+
+  // Keep the selected patient in sync with the URL (deep links, notifications, refresh)
+  useEffect(() => {
+    if (!routeId || patient?.id === routeId) return;
+    const match = patients.find(p => p.id === routeId);
+    if (match) setCurrentPatient(match);
+  }, [routeId, patients, patient?.id, setCurrentPatient]);
   const location = useLocation();
   const [voiceResult, setVoiceResult] = useState(null);
   const [viewMode, setViewMode] = useState(!patient || startInRegistry ? 'list' : 'detail');
@@ -113,7 +122,7 @@ const PatientIntel = ({ patients = [], patient, setCurrentPatient, setCurrentVie
         formData.append("patient_id", patient.id);
 
         try {
-          const res = await fetch("https://dry-frog-85.loca.lt/api/voice/patient-symptom", {
+          const res = await fetch(`${BASE_API}/voice/patient-symptom`, {
             method: "POST",
             body: formData
           });
@@ -172,7 +181,7 @@ const PatientIntel = ({ patients = [], patient, setCurrentPatient, setCurrentVie
 
       // Get English translation of the spoken text if not English
       if (patientLang !== 'en-US') {
-        const res = await fetch("https://dry-frog-85.loca.lt/api/voice/translate", {
+        const res = await fetch(`${BASE_API}/voice/translate`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -288,7 +297,7 @@ const PatientIntel = ({ patients = [], patient, setCurrentPatient, setCurrentVie
 
     // Open the PDF endpoint directly in a new tab — the browser will read
     // the Content-Disposition: attachment header and save it as a .pdf file.
-    const url = `http://localhost:8000/api/patient/${patient.id}/summary-pdf`;
+    const url = `${BASE_API}/patient/${patient.id}/summary-pdf`;
     window.open(url, '_blank');
 
     // Reset loading state after a short delay

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BASE_API } from '../../config.js';
 
 const TrialMatcherPanel = ({ patient, cachedTrials, setCachedTrials, isStandalone = false }) => {
   const [loading, setLoading] = useState(false);
@@ -10,7 +11,7 @@ const TrialMatcherPanel = ({ patient, cachedTrials, setCachedTrials, isStandalon
   const [radiusFilter, setRadiusFilter] = useState('Nationwide');
 
   useEffect(() => {
-    // If parent already has cached results for this patient, do nothing — no Gemini call
+    // If parent already has cached results for this patient, do nothing — no AI call
     if (cachedTrials[patient?.id] || !patient?.id) return;
 
     const fetchTrials = async () => {
@@ -41,9 +42,9 @@ const TrialMatcherPanel = ({ patient, cachedTrials, setCachedTrials, isStandalon
           return;
         }
 
-        // Step 2: Send raw studies to backend for Gemini AI screening (only called ONCE)
+        // Step 2: Send raw studies to backend for AI screening (Groq) (only called ONCE)
         setLoadingMsg(`AI screening ${studies.length} trials against patient profile...`);
-        const res = await fetch(`https://dry-frog-85.loca.lt/api/trials/match/${patient.id}`, {
+        const res = await fetch(`${BASE_API}/trials/match/${patient.id}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ studies })
@@ -51,7 +52,7 @@ const TrialMatcherPanel = ({ patient, cachedTrials, setCachedTrials, isStandalon
 
         if (!res.ok) {
           const errData = await res.json();
-          throw new Error(errData.detail || 'Gemini screening failed');
+          throw new Error(errData.detail || 'AI screening failed');
         }
 
         const data = await res.json();

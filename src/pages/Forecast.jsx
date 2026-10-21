@@ -4,6 +4,7 @@ import { usePatientStore } from '../stores/patientStore';
 import { useForecastStore } from '../stores/forecastStore';
 import useSSEStream from '../hooks/useSSEStream';
 import TopHeader from '../components/TopHeader';
+import { BASE_API } from '../config.js';
 
 const Forecast = () => {
   const { patients, currentPatient, setCurrentPatient, loadPatients } = usePatientStore();
@@ -45,7 +46,7 @@ const Forecast = () => {
     setSimulatedData(null);
     try {
       baseSSE.setData('');
-      await baseSSE.startStream('https://dry-frog-85.loca.lt/api/forecast/trajectory', { patient_id: patientId });
+      await baseSSE.startStream(`${BASE_API}/forecast/trajectory`, { patient_id: patientId });
     } catch (err) {
       console.error("Failed to stream forecast:", err);
     }
@@ -92,7 +93,7 @@ const Forecast = () => {
     const runSimulation = async () => {
       try {
         simSSE.setData('');
-        await simSSE.startStream('https://dry-frog-85.loca.lt/api/forecast/simulate', {
+        await simSSE.startStream(`${BASE_API}/forecast/simulate`, {
           patient_id: currentPatient.id,
           interventions: activeList
         });
@@ -215,33 +216,9 @@ const Forecast = () => {
       .reduce((acc, curr) => acc + Math.abs(curr.risk_delta), 0);
     const roundedPct = Math.round(totalDelta * 100);
 
-    if (currentPatient?.id === 'P-00142') {
-      if (activeInterventions['Add Metformin'] && activeInterventions['Increase Lisinopril']) {
-        return (
-          <>
-            Projected <span className="text-[#FF6B9E] font-black">18% reduction</span> in HbA1c and improved BP control over 6 months. Renal impact negligible.
-          </>
-        );
-      }
-      if (activeInterventions['Increase Lisinopril']) {
-        return (
-          <>
-            Projected <span className="text-[#FF6B9E] font-black">12% reduction</span> in BP control over 6 months. Renal impact negligible.
-          </>
-        );
-      }
-      if (activeInterventions['Add Metformin']) {
-        return (
-          <>
-            Projected <span className="text-[#FF6B9E] font-black">10% reduction</span> in HbA1c over 6 months. Renal impact negligible.
-          </>
-        );
-      }
-    }
-
     return (
       <>
-        Projected <span className="text-[#FF6B9E] font-black">{roundedPct || 12}% reduction</span> in progression risk markers over 6 months.
+        Projected <span className="text-[#FF6B9E] font-black">{roundedPct}% reduction</span> in progression risk over 6 months ({activeKeys.join(' + ')}).
       </>
     );
   };

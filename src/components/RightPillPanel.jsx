@@ -3,13 +3,14 @@ import { T } from '../tokens';
 import { fetchPillEvents } from '../api';
 import GlassPanel from './GlassPanel';
 import Badge from './Badge';
+import { BASE_API } from '../config.js';
 
 const RightPillPanel = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
     // We will fetch patients, then extract all their recent clinical patterns
-    fetch('https://dry-frog-85.loca.lt/api/patients')
+    fetch(`${BASE_API}/patients`)
       .then(r => r.json())
       .then(patients => {
         let allPatterns = [];

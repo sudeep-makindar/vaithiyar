@@ -6,7 +6,8 @@ import time
 import asyncio
 import os
 from services.supabase_service import db_service
-from services.gemini_service import gemini_service
+from services.ai_service import ai_service
+from services.store import store
 
 router = APIRouter(prefix="/api", tags=["comorbidity"])
 
@@ -29,23 +30,19 @@ COMORBIDITY_SCHEMA = """
 """
 
 def get_patient_snapshot(patient_id: str) -> str:
-    db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database.json")
     try:
-        with open(db_path, 'r') as f:
-            db = json.load(f)
-            patients = db.get("patients", [])
-            patient = next((p for p in patients if p["id"] == patient_id), None)
-            if patient:
-                return json.dumps({
-                    "id": patient["id"],
-                    "name": patient["name"],
-                    "age": patient["age"],
-                    "sex": patient["sex"],
-                    "diagnosis": patient["diagnosis"],
-                    "medications": patient["medications"],
-                    "adherenceScore": patient["adherenceScore"],
-                    "labs_latest": {k: v[-1] if v else None for k, v in patient.get("labs", {}).items()}
-                })
+        patient = store.get_patient(patient_id)
+        if patient:
+            return json.dumps({
+                "id": patient["id"],
+                "name": patient["name"],
+                "age": patient["age"],
+                "sex": patient["sex"],
+                "diagnosis": patient["diagnosis"],
+                "medications": patient["medications"],
+                "adherenceScore": patient["adherenceScore"],
+                "labs_latest": {k: v[-1] if v else None for k, v in patient.get("labs", {}).items()}
+            })
     except Exception as e:
         print(f"Error loading patient snapshot: {e}")
     return f"{{'patient_id': '{patient_id}'}}"
@@ -65,7 +62,7 @@ async def get_comorbidity_web(req: ComorbidityRequest):
             yield "data: [DONE]\n\n"
         return StreamingResponse(stream_cache(), media_type="text/event-stream")
 
-    print(f"No cache found for {req.patient_id}. Querying live Gemini comorbidity web engine...")
+    print(f"No cache found for {req.patient_id}. Querying live AI comorbidity web engine...")
     patient_snapshot = get_patient_snapshot(req.patient_id)
     
     prompt = (
@@ -77,9 +74,9 @@ async def get_comorbidity_web(req: ComorbidityRequest):
         "Explain the physiological mechanism in the mechanism field for each edge. Return only valid JSON, no prose."
     )
     
-    async def stream_live_gemini():
+    async def stream_live_ai():
         full_text = ""
-        for chunk in gemini_service.stream_content(prompt):
+        for chunk in ai_service.stream_json(prompt):
             full_text += chunk
             yield f"data: {json.dumps(chunk)}\n\n"
             await asyncio.sleep(0.02)
@@ -97,13 +94,13 @@ async def get_comorbidity_web(req: ComorbidityRequest):
             
         yield "data: [DONE]\n\n"
 
-    return StreamingResponse(stream_live_gemini(), media_type="text/event-stream")
+    return StreamingResponse(stream_live_ai(), media_type="text/event-stream")
 
 @router.post("/second-opinion")
 async def execute_second_opinion(req: SecondOpinionRequest):
     """
     Stress-test clinical hypothesis against patient profile history and stream verdict.
-    Enforces live Gemini call to highlight the 'wow' moment.
+    Enforces live AI call to highlight the 'wow' moment.
     """
     print(f"Executing Second Opinion for patient {req.patient_id} and hypothesis: {req.hypothesis}...")
     patient_snapshot = get_patient_snapshot(req.patient_id)
@@ -122,7 +119,7 @@ async def execute_second_opinion(req: SecondOpinionRequest):
     
     async def stream_second_opinion():
         full_text = ""
-        for chunk in gemini_service.stream_content(prompt):
+        for chunk in ai_service.stream_content(prompt):
             full_text += chunk
             yield f"data: {json.dumps(chunk)}\n\n"
             await asyncio.sleep(0.02)
@@ -159,3 +156,31 @@ async def execute_second_opinion(req: SecondOpinionRequest):
         yield "data: [DONE]\n\n"
 
     return StreamingResponse(stream_second_opinion(), media_type="text/event-stream")
+
+
+@router.post("/second-opinion/structured")
+async def structured_second_opinion(req: SecondOpinionRequest):
+    """Same stress-test as /second-opinion, returned as JSON for the patient-page AI Opinion panel."""
+    from services import llm
+    prompt = (
+        "You are a clinical second-opinion engine reviewing a physician's working hypothesis.\n"
+        f"Hypothesis: \"{req.hypothesis}\"\n"
+        f"Patient profile (latest labs, diagnoses, medications):\n{get_patient_snapshot(req.patient_id)}\n\n"
+        "Cite specific lab values, trends and medications. Return ONLY JSON:\n"
+        '{"verdict": "CORROBORATED" | "CONTRADICTED" | "INSUFFICIENT EVIDENCE", "confidence": <0-100>, '
+        '"support": ["3-4 specific supporting findings"], "contradict": ["2-3 gaps, conflicts or differentials"]}'
+    )
+    try:
+        result = await asyncio.to_thread(llm.generate_json, prompt, temperature=0.2)
+        db_service.save_second_opinion(req.patient_id, req.hypothesis, int(result.get("confidence", 0) or 0),
+                                       result.get("verdict", ""), json.dumps(result))
+        return {
+            "verdict": str(result.get("verdict", "INSUFFICIENT EVIDENCE")).upper(),
+            "confidence": result.get("confidence"),
+            "support": result.get("support", []),
+            "contradict": result.get("contradict", []),
+        }
+    except Exception as e:
+        print(f"Structured second opinion failed: {e}")
+        return {"verdict": "INSUFFICIENT EVIDENCE", "confidence": None,
+                "support": [], "contradict": ["AI service is busy right now. Please retry in a few seconds."]}

@@ -16,7 +16,7 @@ const DEMO_STEPS = [
   // 6. Auto-types into NL query bar 'What is the creatinine trend?'
   { id: 7, action: 'type_query', payload: 'What is the creatinine trend?', wait: 3500 }, // type timing baked in component later
   // 7. Submits query
-  { id: 8, action: 'submit_query', wait: 5000 }, // wait for gemini response
+  { id: 8, action: 'submit_query', wait: 5000 }, // wait for AI response
   // 8. Types into Second Opinion: 'Diabetic nephropathy'
   { id: 9, action: 'type_opinion', payload: 'Diabetic nephropathy', wait: 3000 },
   // 9. Submits

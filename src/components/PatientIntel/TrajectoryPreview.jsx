@@ -8,43 +8,31 @@ const TrajectoryPreview = ({ patient }) => {
   const [chartData, setChartData] = useState([]);
   const [primaryCondition, setPrimaryCondition] = useState('');
 
-  // Setup interventions based on patient
+  // Evidence-based intervention options derived from the patient's own problem list
   const getInterventions = () => {
-    if (patient.id === 'P-00142') {
-      return [
-        { label: 'Add Metformin', delta: -0.25, cond: 'Type 2 Diabetes', details: '500mg daily' },
-        { label: 'Increase Lisinopril', delta: -0.15, cond: 'Hypertension', details: 'To 20mg daily' }
-      ];
-    }
-    if (patient.id === 'P-00399') {
-      return [
-        { label: 'Titrate Beta Blocker', delta: -0.20, cond: 'Congestive Heart Failure', details: 'Coreg 25mg bid' },
-        { label: 'Restructure Polypharmacy', delta: -0.30, cond: 'Stage 3 CKD', details: 'Avoid NSAIDs' }
-      ];
-    }
-    return [
-      { label: 'Add Iron Supplement', delta: -0.18, cond: 'Anaemia', details: 'Fersolate 300mg' }
-    ];
+    const dx = (patient.diagnosis || []).join(' ').toLowerCase();
+    const has = (...keys) => keys.some(k => dx.includes(k));
+    const options = [];
+    if (has('heart failure', 'hfref', 'chf')) options.push({ label: 'Optimise diuretic dose', delta: -0.22, cond: 'Heart Failure', details: 'Furosemide +20 mg, daily weights' });
+    if (has('coronary', 'pci', 'myocardial')) options.push({ label: 'Reinforce DAPT adherence', delta: -0.2, cond: 'Coronary Disease', details: 'PillGuard reminders + counselling' });
+    if (has('type 2 diabetes')) options.push({ label: 'Add / up-titrate SGLT2 inhibitor', delta: -0.18, cond: 'Type 2 Diabetes', details: 'Empagliflozin 10 → 25 mg' });
+    if (has('type 1 diabetes')) options.push({ label: 'Adjust basal insulin', delta: -0.12, cond: 'Type 1 Diabetes', details: 'Glargine −10% (nocturnal hypos)' });
+    if (has('copd', 'asthma')) options.push({ label: 'Pulmonary rehabilitation', delta: -0.15, cond: 'COPD', details: '8-week supervised programme' });
+    if (has('kidney', 'ckd')) options.push({ label: 'Renal-dose medication review', delta: -0.1, cond: 'CKD', details: 'Adjust for current eGFR' });
+    if (has('hypertension')) options.push({ label: 'Up-titrate antihypertensive', delta: -0.12, cond: 'Hypertension', details: 'Target SBP < 130 mmHg' });
+    if (has('liver', 'nafld')) options.push({ label: 'Structured weight-loss plan', delta: -0.15, cond: 'NAFLD', details: '7–10% body-weight target' });
+    if (has('lipid', 'cholesterol')) options.push({ label: 'High-intensity statin', delta: -0.08, cond: 'Dyslipidaemia', details: 'LDL target < 70 mg/dL' });
+    if (has('rheumatoid')) options.push({ label: 'Continue DMARD + monitoring', delta: -0.08, cond: 'Rheumatoid Arthritis', details: 'Methotrexate, LFT every 8 weeks' });
+    if (has('thyroid')) options.push({ label: 'Levothyroxine dose check', delta: -0.05, cond: 'Hypothyroidism', details: 'Repeat TSH in 6 weeks' });
+    if ((patient.adherenceScore ?? 100) < 80) options.push({ label: 'Adherence programme', delta: -0.12, cond: 'Adherence', details: `Current adherence ${patient.adherenceScore}%` });
+    return options.slice(0, 3);
   };
 
   useEffect(() => {
     if (!patient) return;
-
-    // Determine primary condition
-    const cond = patient.diagnosis?.find(d => d.toLowerCase().includes('diabetes')) 
-      ? 'Type 2 Diabetes' 
-      : (patient.diagnosis?.[0] || 'General Risk');
-    setPrimaryCondition(cond);
-
-    // Default active interventions for P-00142 to match mockup (Lisinopril is ON, Metformin is OFF)
-    if (patient.id === 'P-00142') {
-      setActiveInterventions({
-        'Add Metformin': false,
-        'Increase Lisinopril': true
-      });
-    } else {
-      setActiveInterventions({});
-    }
+    const first = getInterventions()[0];
+    setPrimaryCondition(first?.cond === 'Adherence' ? (patient.diagnosis?.[0] || 'General') : (first?.cond || patient.diagnosis?.[0] || 'General'));
+    setActiveInterventions({});
   }, [patient?.id]);
 
   useEffect(() => {
@@ -95,9 +83,10 @@ const TrajectoryPreview = ({ patient }) => {
 
   // Format month names for XAxis
   const formatMonth = (value) => {
-    const months = ['MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP'];
     const index = parseInt(value.replace('Month ', ''));
-    return months[index % months.length];
+    const d = new Date();
+    d.setMonth(d.getMonth() + index);
+    return d.toLocaleString('en-US', { month: 'short' }).toUpperCase();
   };
 
   const getSimulatedOutcomeText = () => {
@@ -105,33 +94,12 @@ const TrajectoryPreview = ({ patient }) => {
     if (activeKeys.length === 0) {
       return "Select an intervention above to simulate patient outcomes.";
     }
-    if (patient.id === 'P-00142') {
-      if (activeInterventions['Add Metformin'] && activeInterventions['Increase Lisinopril']) {
-        return (
-          <>
-            Projected <span className="text-[#FF6B9E] font-black">18% reduction</span> in HbA1c and improved BP control over 6 months. Renal impact negligible.
-          </>
-        );
-      }
-      if (activeInterventions['Increase Lisinopril']) {
-        return (
-          <>
-            Projected <span className="text-[#FF6B9E] font-black">12% reduction</span> in HbA1c over 6 months. Renal impact negligible.
-          </>
-        );
-      }
-      if (activeInterventions['Add Metformin']) {
-        return (
-          <>
-            Projected <span className="text-[#FF6B9E] font-black">10% reduction</span> in HbA1c over 6 months. Renal impact negligible.
-          </>
-        );
-      }
-    }
-    // Generic outcome
+    const end = chartData[chartData.length - 1];
+    const drop = end ? end.risk - end.simulatedRisk : 0;
     return (
       <>
-        Projected <span className="text-[#FF6B9E] font-black">12% reduction</span> in progression risk markers over 6 months.
+        Projected risk score <span className="text-[#FF6B9E] font-black">{end?.simulatedRisk}</span> at 6 months
+        vs {end?.risk} without intervention (<span className="text-[#FF6B9E] font-black">−{drop} points</span>), driven by {activeKeys.join(' + ')}.
       </>
     );
   };

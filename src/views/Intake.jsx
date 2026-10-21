@@ -4,11 +4,18 @@ import TopHeader from '../components/TopHeader';
 import FileUpload from '../components/IntakeEngine/FileUpload';
 import ExtractionResults from '../components/IntakeEngine/ExtractionResults';
 import PdfViewer from '../components/IntakeEngine/PdfViewer';
+import { BASE_API } from '../config.js';
 
 const Intake = ({ patient, patients = [], setCurrentPatient, refreshPatients, setCurrentView }) => {
   const [fileData, setFileData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [extraction, setExtraction] = useState(null);
+
+  // Real intake history: every document the AI has processed, newest first
+  const intakeHistory = patients
+    .flatMap(p => (p.clinicalPatterns || []).filter(a => a.type === 'Data Ingest' && a.timestamp)
+      .map(a => ({ ...a, patientName: p.name })))
+    .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
   const [error, setError] = useState(null);
   const [documentType, setDocumentType] = useState('discharge_summary');
 
@@ -19,7 +26,7 @@ const Intake = ({ patient, patients = [], setCurrentPatient, refreshPatients, se
     setExtraction(null);
 
     try {
-      const response = await fetch('https://dry-frog-85.loca.lt/api/intake/extract', {
+      const response = await fetch(`${BASE_API}/intake/extract`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -51,7 +58,7 @@ const Intake = ({ patient, patients = [], setCurrentPatient, refreshPatients, se
     setLoading(true);
     try {
       const payload = { ...finalData, patient_id: patient?.id };
-      const response = await fetch('https://dry-frog-85.loca.lt/api/intake/save', {
+      const response = await fetch(`${BASE_API}/intake/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -185,36 +192,33 @@ const Intake = ({ patient, patients = [], setCurrentPatient, refreshPatients, se
                 <div className="bg-white border border-gray-200 rounded-[24px] p-6 flex-grow flex flex-col shadow-sm">
                   <h3 className="text-xl font-extrabold text-black mb-6">Processing Queue</h3>
                   <div className="space-y-4 flex-grow overflow-y-auto pr-1">
-                    <div className="bg-[#FAF9F5] border border-gray-150 p-4 rounded-xl flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-[#FFDCE6] flex items-center justify-center text-[#b56f89] shrink-0">
-                        <span className="material-symbols-outlined">description</span>
-                      </div>
-                      <div className="flex-grow min-w-0">
-                        <p className="text-xs font-bold text-black truncate">Smith_Bloodwork_Q2.pdf</p>
-                        <div className="w-full bg-gray-200 h-1.5 rounded-full mt-2 overflow-hidden">
-                          <div className="bg-[#b56f89] h-full rounded-full" style={{ width: '75%' }}></div>
+                    {loading && (
+                      <div className="bg-[#FAF9F5] border border-gray-150 p-4 rounded-xl flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-[#FFDCE6] flex items-center justify-center text-[#b56f89] shrink-0">
+                          <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                        </div>
+                        <div className="flex-grow min-w-0">
+                          <p className="text-xs font-bold text-black truncate">{fileData?.name || 'Document'}</p>
+                          <p className="text-[10px] font-extrabold text-[#b56f89] mt-1">AI extraction in progress…</p>
                         </div>
                       </div>
-                      <span className="text-[10px] font-extrabold text-gray-500 shrink-0">75%</span>
-                    </div>
-
-                    <div className="bg-[#FAF9F5] border border-gray-150 p-4 rounded-xl flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-[#FFECA1] flex items-center justify-center text-[#8C6D14] shrink-0">
-                        <span className="material-symbols-outlined">check_circle</span>
+                    )}
+                    {intakeHistory.length === 0 && !loading && (
+                      <p className="text-xs text-gray-500 font-semibold">No documents processed yet. Upload one to start.</p>
+                    )}
+                    {intakeHistory.slice(0, 5).map((h, i) => (
+                      <div key={i} className="bg-[#FAF9F5] border border-gray-150 p-4 rounded-xl flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-[#FFECA1] flex items-center justify-center text-[#8C6D14] shrink-0">
+                          <span className="material-symbols-outlined">check_circle</span>
+                        </div>
+                        <div className="flex-grow min-w-0">
+                          <p className="text-xs font-bold text-black truncate">{h.patientName}</p>
+                          <p className="text-[10px] font-semibold text-gray-500 mt-0.5 line-clamp-2">{h.description}</p>
+                          <p className="text-[10px] font-extrabold text-brand-green mt-1">Parsed &amp; Structured · {h.time}</p>
+                        </div>
                       </div>
-                      <div className="flex-grow min-w-0">
-                        <p className="text-xs font-bold text-black truncate">Initial_Consult_Notes.docx</p>
-                        <p className="text-[10px] font-extrabold text-brand-green mt-1">Parsed &amp; Structured</p>
-                      </div>
-                      <button className="text-gray-400 hover:text-black cursor-pointer">
-                        <span className="material-symbols-outlined text-lg">more_vert</span>
-                      </button>
-                    </div>
+                    ))}
                   </div>
-
-                  <button className="w-full mt-6 bg-[#efeeea] hover:bg-gray-200 transition-colors text-black font-extrabold py-3.5 rounded-full text-xs cursor-pointer">
-                    View All Tasks
-                  </button>
                 </div>
 
                 {/* AI Insights Snippet (Dark Card) */}
@@ -226,12 +230,12 @@ const Intake = ({ patient, patients = [], setCurrentPatient, refreshPatients, se
                       <h4 className="text-sm font-extrabold">Engine Status</h4>
                     </div>
                     <p className="text-xs text-gray-400 leading-relaxed">
-                      The intake engine is currently running at peak efficiency. Last 50 documents parsed with 99.2% confidence.
+                      Vision + text extraction on Groq (Qwen-VL, GPT-OSS). Source documents are archived to Amazon S3; structured data lands in DynamoDB.
                     </p>
                     <div className="flex justify-between items-end mt-2">
                       <div>
-                        <span className="block text-[9px] text-gray-500 uppercase tracking-wider mb-0.5 font-bold">Today's Intake</span>
-                        <span className="text-2xl font-black text-white">124</span>
+                        <span className="block text-[9px] text-gray-500 uppercase tracking-wider mb-0.5 font-bold">Documents (7 days)</span>
+                        <span className="text-2xl font-black text-white">{intakeHistory.filter(h => Date.now() - new Date(h.timestamp).getTime() < 7 * 86400000).length}</span>
                       </div>
                       <div className="w-16 h-8 bg-white/10 rounded-full flex items-center justify-center px-1">
                         <svg className="w-12 h-4" fill="none" viewBox="0 0 48 16">

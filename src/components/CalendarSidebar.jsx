@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCalendarStore } from '../stores/calendarStore';
 import { useUserStore } from '../stores/userStore';
+import { greeting, isSameDay } from '../utils/time';
 
 const CalendarSidebar = ({ showGreeting = true, className = '', isSidebar = true }) => {
-  const { selectedDate, setSelectedDate, events, addEvent } = useCalendarStore();
+  const { selectedDate, setSelectedDate, events, addEvent, loadEvents } = useCalendarStore();
   const { doctorName } = useUserStore();
   const [currentMonth, setCurrentMonth] = useState(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1));
   const [showAddModal, setShowAddModal] = useState(false);
@@ -11,6 +12,10 @@ const CalendarSidebar = ({ showGreeting = true, className = '', isSidebar = true
   const [eventTitle, setEventTitle] = useState('');
   const [eventDesc, setEventDesc] = useState('');
   const [eventType, setEventType] = useState('consult');
+
+  useEffect(() => {
+    loadEvents(currentMonth);
+  }, [currentMonth, loadEvents]);
 
   // Month navigation
   const prevMonth = () => {
@@ -100,7 +105,7 @@ const CalendarSidebar = ({ showGreeting = true, className = '', isSidebar = true
   const selectedDateEvents = events.filter(e => e.date === selectedDateStr).sort((a, b) => a.time.localeCompare(b.time));
 
   const isToday = (dateObj) => {
-    return dateObj.getFullYear() === 2026 && dateObj.getMonth() === 5 && dateObj.getDate() === 13;
+    return isSameDay(dateObj, new Date());
   };
 
   const isSelected = (dateObj) => {
@@ -115,7 +120,7 @@ const CalendarSidebar = ({ showGreeting = true, className = '', isSidebar = true
         /* Greeting */
         <div className="flex justify-between items-center shrink-0">
           <div>
-            <p className="text-xs text-gray-500 font-bold">Good morning,</p>
+            <p className="text-xs text-gray-500 font-bold">{greeting()},</p>
             <h2 className="text-xl font-extrabold text-brand-sidebar tracking-tight leading-none mt-1">{doctorName}</h2>
           </div>
           <button className="w-10 h-10 rounded-full bg-white border border-gray-200/80 shadow-sm flex items-center justify-center hover:bg-gray-50 transition-colors">

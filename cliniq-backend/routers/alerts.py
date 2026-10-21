@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import json
 import asyncio
 from services.supabase_service import db_service
-from services.gemini_service import gemini_service
+from services.ai_service import ai_service
 
 router = APIRouter(prefix="/api/alerts", tags=["alerts"])
 
@@ -36,7 +36,7 @@ async def explain_alert(req: AlertExplainRequest):
             yield "data: [DONE]\n\n"
         return StreamingResponse(stream_cache(), media_type="text/event-stream")
 
-    print(f"No explanation cache for alert {req.alert_id}. Querying live Gemini co-pilot...")
+    print(f"No explanation cache for alert {req.alert_id}. Querying live AI co-pilot...")
     prompt = (
         "You are a clinical co-pilot advising a physician. An alert was fired for a patient: "
         f"Alert description: \"{req.description}\" (ID: {req.alert_id}). "
@@ -47,7 +47,7 @@ async def explain_alert(req: AlertExplainRequest):
 
     async def stream_explanation():
         full_text = ""
-        for chunk in gemini_service.stream_content(prompt):
+        for chunk in ai_service.stream_content(prompt):
             full_text += chunk
             yield f"data: {json.dumps(chunk)}\n\n"
             await asyncio.sleep(0.02)
@@ -64,7 +64,7 @@ async def explain_alert(req: AlertExplainRequest):
 
 def calculate_urgency_score(patient_name: str, patient_age: int, conditions: list, alert_desc: str, severity: str) -> int:
     """
-    Synchronous utility to calculate alert urgency 1-10 using Gemini.
+    Synchronous utility to calculate alert urgency 1-10 using the LLM.
     """
     prompt = (
         "You are a clinical triage AI. Rate the clinical urgency of the following alert on a scale from 1 to 10 (where 10 is immediate life-threatening emergency, 1 is routine screening followup). "
@@ -73,7 +73,7 @@ def calculate_urgency_score(patient_name: str, patient_age: int, conditions: lis
         "Return ONLY a single integer score between 1 and 10. No explanations, no text."
     )
     try:
-        response_text = gemini_service.generate_content(prompt).strip()
+        response_text = ai_service.generate_content(prompt).strip()
         # Find any digit 1-10
         import re
         match = re.search(r'\b(10|[1-9])\b', response_text)

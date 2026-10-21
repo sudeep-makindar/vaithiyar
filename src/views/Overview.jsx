@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUserStore } from '../stores/userStore';
 import { useNavigate } from 'react-router-dom';
 import TopHeader from '../components/TopHeader';
 import { usePatientStore } from '../stores/patientStore';
 import CalendarSidebar from '../components/CalendarSidebar';
+import { fetchDashboardSummary } from '../api';
+import { greeting } from '../utils/time';
 
 const Overview = () => {
   const navigate = useNavigate();
@@ -14,6 +16,28 @@ const Overview = () => {
   );
 
   const activePatient = patients.find(p => p.id === selectedPatientId) || patients[0] || null;
+
+  // Live summary computed by the backend from patient alerts and the physician's schedule
+  const [summary, setSummary] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    const load = () => fetchDashboardSummary().then(s => alive && s && setSummary(s));
+    load();
+    const timer = setInterval(load, 60000);
+    return () => { alive = false; clearInterval(timer); };
+  }, [patients]);
+  const sev = summary?.alerts_by_severity || {};
+  const eventsToday = summary?.events_today ?? 0;
+  const nextEvent = summary?.next_event;
+
+  // Highest-risk patients first, as a clinician would triage
+  const triagedPatients = [...patients].sort((a, b) => b.riskScore - a.riskScore);
+  const rowLabel = (p) => {
+    const top = (p.clinicalPatterns || []).find(a => a.severity === 'HIGH');
+    if (p.riskScore >= 70) return top ? top.type : 'Critical Review';
+    if (p.riskScore > 50) return 'Follow-up Due';
+    return 'Routine Check-Up';
+  };
 
   const handlePatientSelect = (patient) => {
     setSelectedPatientId(patient.id);
@@ -46,10 +70,10 @@ const Overview = () => {
           {/* Hero Header */}
           <div className="mb-8 animate-fade-in-up">
             <h1 className="text-3xl md:text-[40px] font-extrabold text-brand-sidebar tracking-tight leading-tight md:leading-none">
-              Good morning, {doctorName}
+              {greeting()}, {doctorName}
             </h1>
             <p className="text-sm md:text-base text-gray-500 max-w-2xl mt-2 font-medium">
-              ClinIQ+ wishes you a good and productive day. {totalPatients} patients waiting for your treatment today. You also have one live event in your calendar today.
+              {totalPatients} patients under your care, {criticalPatients} need urgent review. {summary ? `${summary.alerts_24h} new alerts in the last 24 hours and ${eventsToday} ${eventsToday === 1 ? 'event' : 'events'} on today's schedule${nextEvent ? ` (next: ${nextEvent.time} ${nextEvent.title})` : ''}.` : 'Syncing live alerts…'}
             </p>
           </div>
 
@@ -166,21 +190,26 @@ const Overview = () => {
 
                 {/* Card 4: Alerts Today (Blue) */}
                 <div className="bg-brand-blue rounded-card p-6 relative overflow-hidden h-40 flex flex-col justify-center flat-look animate-fade-in-up">
-                  <h3 className="font-extrabold text-2xl text-brand-sidebar mb-4 z-10">Alerts today:</h3>
+                  <h3 className="font-extrabold text-2xl text-brand-sidebar mb-4 z-10">Alerts (24 h):</h3>
                   <div className="flex gap-10 z-10">
                     <div className="flex flex-col items-start">
-                      <span className="font-extrabold text-2xl block text-brand-sidebar tracking-tight leading-none">02:45 <span className="text-sm">h</span></span>
-                      <span className="text-[10px] font-bold opacity-70 uppercase tracking-wider mt-1">In Clinic</span>
+                      <span className="font-extrabold text-2xl block text-brand-sidebar tracking-tight leading-none">{sev.HIGH ?? '–'}</span>
+                      <span className="text-[10px] font-bold opacity-70 uppercase tracking-wider mt-1">Critical</span>
                     </div>
                     <div className="flex flex-col items-start">
-                      <span className="font-extrabold text-2xl block text-brand-sidebar tracking-tight leading-none">01:30 <span className="text-sm">min</span></span>
-                      <span className="text-[10px] font-bold opacity-70 uppercase tracking-wider mt-1">Video Calls</span>
+                      <span className="font-extrabold text-2xl block text-brand-sidebar tracking-tight leading-none">{sev.MEDIUM ?? '–'}</span>
+                      <span className="text-[10px] font-bold opacity-70 uppercase tracking-wider mt-1">Warnings</span>
                     </div>
                     <div className="flex flex-col items-start">
-                      <span className="font-extrabold text-2xl block text-brand-sidebar tracking-tight leading-none">00:15 <span className="text-sm">min</span></span>
-                      <span className="text-[10px] font-bold opacity-70 uppercase tracking-wider mt-1">In Chat</span>
+                      <span className="font-extrabold text-2xl block text-brand-sidebar tracking-tight leading-none">{summary ? (sev.LOW || 0) + (sev.INFO || 0) : '–'}</span>
+                      <span className="text-[10px] font-bold opacity-70 uppercase tracking-wider mt-1">Info</span>
                     </div>
                   </div>
+                  {summary?.latest_alert && (
+                    <p className="text-[10px] font-bold text-brand-sidebar/70 mt-3 z-10 truncate">
+                      Latest: {summary.latest_alert.patient} · {summary.latest_alert.type} · {summary.latest_alert.time}
+                    </p>
+                  )}
                   {/* Decorative Star Blob */}
                   <svg className="absolute blob-shape w-32 h-32 right-0 top-4 opacity-20" fill="black" viewBox="0 0 100 100">
                     <polygon points="50,10 61,40 95,40 68,60 79,90 50,70 21,90 32,60 5,40 39,40"></polygon>
@@ -200,7 +229,7 @@ const Overview = () => {
                     </button>
                   </div>
                   <div className="flex flex-col gap-3">
-                    {patients.map((p) => {
+                    {triagedPatients.map((p) => {
                       const isSelected = selectedPatientId === p.id;
                       const isCritical = p.riskScore >= 70;
                       const rowBg = isSelected ? 'bg-brand-pink-light border-none' : 'bg-white hover:bg-gray-50 border border-gray-200/60';
@@ -220,7 +249,7 @@ const Overview = () => {
                             <div>
                               <h4 className="font-extrabold text-sm text-brand-sidebar">{p.name}</h4>
                               <span className="text-xs text-gray-500 font-medium">
-                                {isCritical ? 'Critical Alert' : 'Routine Check-Up'}
+                                {rowLabel(p)}
                               </span>
                             </div>
                           </div>
@@ -266,7 +295,7 @@ const Overview = () => {
                           <span className="text-gray-500 font-bold">Last Checked</span>
                           <div className="col-span-3">
                             <p className="font-extrabold text-gray-800">{activePatient.doctor || 'Dr. Priya Nair'}</p>
-                            <span className="text-blue-600 font-bold mt-0.5 inline-block cursor-pointer">Prescription #AM/982</span>
+                            <span className="text-blue-600 font-bold mt-0.5 inline-block cursor-pointer">Prescription #{activePatient.id.replace('P-', 'RX-')}/{activePatient.medications?.length || 0}</span>
                           </div>
                         </div>
                         <div className="grid grid-cols-4 gap-2 border-b border-white/40 pb-2">

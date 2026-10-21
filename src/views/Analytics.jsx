@@ -1,64 +1,35 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { T } from '../tokens';
 import TopHeader from '../components/TopHeader';
 import PatientAnalyticsCard from '../components/Analytics/PatientAnalyticsCard';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine } from 'recharts';
 import CalendarSidebar from '../components/CalendarSidebar';
-
-// Heatmap mock matrix data
-const HEATMAP_ROWS = ["Type 2 Diabetes", "Hypertension", "CKD Stage 3", "Rheumatoid Arthritis", "CHF"];
-const HEATMAP_COLS = ["HbA1c", "Creatinine", "BP_Systolic", "ESR", "Potassium", "BNP"];
-
-const HEATMAP_DATA = {
-  "Type 2 Diabetes-HbA1c": { val: 0.95, text: "Glycemic load control metric. Direct correlation." },
-  "Type 2 Diabetes-Creatinine": { val: 0.48, text: "Microvascular damage leading to glomerular filtration decay." },
-  "Type 2 Diabetes-BP_Systolic": { val: 0.35, text: "Synergistic arterial stiffness link." },
-  "Hypertension-BP_Systolic": { val: 0.92, text: "Direct systemic arterial pressure correlate." },
-  "Hypertension-Creatinine": { val: 0.52, text: "Renovascular nephrosclerosis risk multiplier." },
-  "CKD Stage 3-Creatinine": { val: 0.88, text: "Direct renal clearance filtration capacity indicator." },
-  "CKD Stage 3-Potassium": { val: 0.65, text: "Reduced distal tubule potassium excretion capability." },
-  "Rheumatoid Arthritis-ESR": { val: 0.85, text: "Systemic acute-phase reactant index. High correlation." },
-  "CHF-BNP": { val: 0.94, text: "Myocardial stretch biomarker. Highly specific for volume overload." },
-  "CHF-BP_Systolic": { val: 0.58, text: "Afterload mismatch indicator." },
-  "CHF-Potassium": { val: 0.40, text: "Diuretic-induced hypokalemia risk factor." },
-};
-
-const getHeatmapCell = (row, col) => {
-  const key = `${row}-${col}`;
-  return HEATMAP_DATA[key] || { val: 0.12, text: "Baseline physiological noise / negligible correlation." };
-};
-
-// 24 Months anomaly timeline
-const ANOMALY_TIMELINE = [
-  { month: "Jul 24", score: 20, desc: "Normal baseline" },
-  { month: "Sep 24", score: 25, desc: "Normal baseline" },
-  { month: "Nov 24", score: 30, desc: "Normal baseline" },
-  { month: "Jan 25", score: 78, desc: "BP spike (148 mmHg) & Creatinine increase (1.4 mg/dL). Initiated ACE inhibitor titration." },
-  { month: "Mar 25", score: 35, desc: "Recovery curve" },
-  { month: "May 25", score: 40, desc: "Normal baseline" },
-  { month: "Jul 25", score: 85, desc: "HbA1c surge (9.2%). Identified medication non-adherence event." },
-  { month: "Sep 25", score: 42, desc: "Recovery curve" },
-  { month: "Nov 25", score: 35, desc: "Normal baseline" },
-  { month: "Jan 26", score: 38, desc: "Normal baseline" },
-  { month: "Mar 26", score: 92, desc: "BNP elevation (950 pg/mL) & Creatinine escalation (2.8 mg/dL). High risk of fluid overload." },
-  { month: "May 26", score: 50, desc: "Partial stabilization after diuretics adjustment" }
-];
+import { fetchCohortAnalytics, fetchAnomalyTimeline } from '../api';
 
 const Analytics = ({ patients = [] }) => {
   const [cohortMode, setCohortMode] = useState(false); // false = Personal Baseline, true = Age/Gender/BMI Cohort
   const [activeCell, setActiveCell] = useState(null);
   const [selectedAnomaly, setSelectedAnomaly] = useState(null);
 
-  // Benchmarking percentiles
-  const cohortData = useMemo(() => {
-    return {
-      HbA1c: { median: 5.8, p90: 7.2 },
-      Creatinine: { median: 1.0, p90: 1.4 },
-      BP_Systolic: { median: 125, p90: 138 },
-      ESR: { median: 12, p90: 22 },
-      Hemoglobin: { median: 13.8, p90: 15.5 },
-    };
-  }, []);
+  // Cohort matrix + percentile benchmarks, computed server-side from every patient's labs
+  const [cohort, setCohort] = useState(null);
+  useEffect(() => { fetchCohortAnalytics().then(setCohort); }, [patients]);
+  const cohortData = cohort?.benchmarks || {};
+  const HEATMAP_ROWS = cohort?.rows || [];
+  const HEATMAP_COLS = cohort?.cols || [];
+  const getHeatmapCell = (row, col) =>
+    cohort?.cells?.[`${row}-${col}`] || { val: 0, text: 'No measurements for this combination.' };
+
+  // Per-patient anomaly history (default: highest-risk patient)
+  const ranked = useMemo(() => [...patients].sort((a, b) => b.riskScore - a.riskScore), [patients]);
+  const [anomalyPatientId, setAnomalyPatientId] = useState(null);
+  const activeAnomalyId = anomalyPatientId || ranked[0]?.id;
+  const [anomalyTimeline, setAnomalyTimeline] = useState([]);
+  useEffect(() => {
+    if (!activeAnomalyId) return;
+    setSelectedAnomaly(null);
+    fetchAnomalyTimeline(activeAnomalyId).then(r => setAnomalyTimeline(r?.timeline || []));
+  }, [activeAnomalyId]);
 
   return (
     <div className="flex flex-col min-h-screen bg-transparent text-on-surface">
@@ -149,7 +120,7 @@ const Analytics = ({ patients = [] }) => {
               <div className="relative z-10 flex-1 flex flex-col justify-between">
                 <div className="mb-4">
                   <h3 className="font-extrabold text-lg text-brand-sidebar">Biomarker correlations:</h3>
-                  <p className="text-[10px] text-brand-sidebar/70 font-bold mt-0.5">Correlation coefficient mapping conditions to biological markers. Hover for interpretation.</p>
+                  <p className="text-[10px] text-brand-sidebar/70 font-bold mt-0.5">Mean biomarker deviation from reference range, by condition, across {cohort?.patients_analysed ?? '…'} patients. Hover for interpretation.</p>
                 </div>
 
                 {/* Heatmap Grid */}
@@ -201,7 +172,7 @@ const Analytics = ({ patients = [] }) => {
                   {activeCell ? (
                     <div>
                       <div className="text-[10px] font-black text-brand-sidebar uppercase tracking-wider font-mono">
-                        {activeCell.row} × {activeCell.col} (Coef: {activeCell.val.toFixed(2)})
+                        {activeCell.row} × {activeCell.col} (Deviation index: {activeCell.val.toFixed(2)})
                       </div>
                       <div className="text-[11px] text-brand-sidebar/85 font-medium mt-0.5 leading-tight">
                         {activeCell.text}
@@ -220,14 +191,23 @@ const Analytics = ({ patients = [] }) => {
             <div className="bg-brand-pink rounded-[32px] p-6 relative overflow-hidden flex flex-col h-[400px] shadow-sm">
               <div className="relative z-10 flex-1 flex flex-col justify-between">
                 <div className="mb-4">
-                  <h3 className="font-extrabold text-lg text-[#39071f]">Anomaly history:</h3>
-                  <p className="text-[10px] text-[#b56f89] font-bold mt-0.5">Longitudinal deviation score over 24 months. Click highlighted red spike points for details.</p>
+                  <div className="flex justify-between items-center gap-2">
+                    <h3 className="font-extrabold text-lg text-[#39071f]">Anomaly history:</h3>
+                    <select
+                      value={activeAnomalyId || ''}
+                      onChange={(e) => setAnomalyPatientId(e.target.value)}
+                      className="bg-white/60 border border-[#39071f]/20 rounded-full px-3 py-1 text-[11px] font-bold text-[#39071f] cursor-pointer"
+                    >
+                      {ranked.map(p => <option key={p.id} value={p.id}>{p.name} (risk {p.riskScore})</option>)}
+                    </select>
+                  </div>
+                  <p className="text-[10px] text-[#b56f89] font-bold mt-0.5">Monthly deviation score across all tracked biomarkers. Click red points (score above 70) for details.</p>
                 </div>
 
                 {/* Anomaly Timeline Line Chart */}
                 <div className="w-full h-44 relative mt-2">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={ANOMALY_TIMELINE} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                    <LineChart data={anomalyTimeline} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                       <XAxis dataKey="month" stroke="#b56f89" fontSize={9} tickLine={false} />
                       <YAxis stroke="#b56f89" fontSize={9} domain={[0, 100]} tickLine={false} />
                       <Tooltip 

@@ -5,16 +5,10 @@ import uuid
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from pydantic import BaseModel
 from services.supabase_service import db_service
-import google.generativeai as genai
-from dotenv import load_dotenv
 from agents.voice_query_agent import run_voice_query
+from services import aws, llm
 
-# Load env variables
-env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
-load_dotenv(env_path)
-
-api_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
-genai.configure(api_key=api_key)
+MEDICAL_VOCAB_HINT = "Clinical consultation. Drug names: metformin, apixaban, metoprolol, amlodipine, atorvastatin, lisinopril. HbA1c, creatinine, eGFR."
 
 router = APIRouter(prefix="/api/voice", tags=["voice"])
 
@@ -40,8 +34,8 @@ class VoiceQueryRequest(BaseModel):
     query: str
     source: str = "voice"
 
-# Helper: Clean JSON from Gemini markdown block
-def clean_gemini_json(text: str) -> dict:
+# Helper: Clean JSON from a model's markdown block
+def clean_llm_json(text: str) -> dict:
     cleaned = text.strip()
     if cleaned.startswith("```json"):
         cleaned = cleaned[7:]
@@ -53,7 +47,7 @@ def clean_gemini_json(text: str) -> dict:
     try:
         return json.loads(cleaned)
     except Exception as e:
-        print(f"Error decoding JSON from Gemini output: {e}\nRaw output: {text}")
+        print(f"Error decoding JSON from model output: {e}\nRaw output: {text}")
         return {"error": "Failed to parse JSON", "raw": text}
 
 # 1. /api/voice/transcribe
@@ -68,61 +62,16 @@ async def transcribe(
         raise HTTPException(status_code=400, detail="Empty audio file")
 
     try:
-        # Attempt to use Google Speech-to-Text if credentials exist
-        # If not, or if it fails, fall back to Gemini multimodal audio transcription
-        try:
-            from google.cloud import speech
-            client = speech.SpeechClient()
-            config = speech.RecognitionConfig(
-                encoding=speech.RecognitionConfig.AudioEncoding.WEBM_OPUS,
-                sample_rate_hertz=48000,
-                language_code=language_code,
-                enable_automatic_punctuation=True,
-                model="medical_dictation" if context in ["clinical_note", "consultation"] else "default"
-            )
-            audio_obj = speech.RecognitionAudio(content=audio_bytes)
-            response = client.recognize(config=config, audio=audio_obj)
-            
-            transcript_parts = []
-            for result in response.results:
-                transcript_parts.append(result.alternatives[0].transcript)
-            
-            transcribed_text = " ".join(transcript_parts)
-            confidence = response.results[0].alternatives[0].confidence if response.results else 0.9
-            
-            return {
-                "transcribed_text": transcribed_text,
-                "detected_language": language_code,
-                "confidence": confidence,
-                "engine": "google_stt"
-            }
-        except Exception as e_stt:
-            print(f"Google Cloud STT failed/not configured ({e_stt}), falling back to Gemini...")
-            
-            # Gemini Multimodal Audio Transcription fallback
-            model = genai.GenerativeModel("gemini-2.5-flash")
-            
-            # webm or wav depending on file
-            mime_type = audio.content_type or "audio/webm"
-            
-            prompt = (
-                f"Transcribe this audio file into text. The spoken language is {language_code}. "
-                "Ensure medical terms and drug names are spelled correctly. "
-                "Output ONLY the plain transcription text. Do not include any prefix, quotes, or conversational explanations."
-            )
-            
-            response = model.generate_content([
-                {"mime_type": mime_type, "data": audio_bytes},
-                prompt
-            ])
-            
-            transcribed_text = response.text.strip()
-            return {
-                "transcribed_text": transcribed_text,
-                "detected_language": language_code,
-                "confidence": 0.88,
-                "engine": "gemini_multimodal"
-            }
+        # Groq Whisper speech-to-text (multilingual: hi, ta, te, ml, kn, bn, mr, en)
+        prompt = MEDICAL_VOCAB_HINT if context in ["clinical_note", "consultation"] else None
+        transcribed_text = llm.transcribe(audio_bytes, audio.filename or "audio.webm",
+                                          audio.content_type or "audio/webm", language_code, prompt)
+        return {
+            "transcribed_text": transcribed_text,
+            "detected_language": language_code,
+            "confidence": 0.9,
+            "engine": "groq_whisper"
+        }
     except Exception as e:
         print(f"Transcription failure: {e}")
         return {"error": str(e), "transcribed_text": ""}
@@ -131,58 +80,46 @@ async def transcribe(
 @router.post("/synthesize")
 def synthesize(req: SynthesizeRequest):
     try:
-        # Cache lookup locally using SQLite
-        # If cache hit, return immediately
-        # We will attempt Google Cloud Text-to-Speech API
-        try:
-            from google.cloud import texttospeech
-            client = texttospeech.TextToSpeechClient()
-            s_input = texttospeech.SynthesisInput(text=req.text)
-            voice = texttospeech.VoiceSelectionParams(
-                language_code=req.language_code,
-                name=req.voice_name
-            )
-            audio_config = texttospeech.AudioConfig(
-                audio_encoding=texttospeech.AudioEncoding.MP3,
-                speaking_rate=req.speed
-            )
-            response = client.synthesize_speech(
-                input=s_input, voice=voice, audio_config=audio_config
-            )
-            
-            encoded_audio = base64.b64encode(response.audio_content).decode("utf-8")
+        # Amazon Polly neural voices (en-IN / hi-IN "Kajal") when running on AWS
+        polly_audio = aws.synthesize_speech(req.text, req.language_code, req.speed)
+        if polly_audio:
             return {
-                "audio_base64": encoded_audio,
+                "audio_base64": base64.b64encode(polly_audio).decode("utf-8"),
                 "format": "mp3",
-                "engine": "google_tts"
+                "engine": "amazon_polly"
             }
-        except Exception as e_tts:
-            print(f"Google Cloud TTS failed/not configured ({e_tts}), client-side fallback recommended.")
-            # Return empty base64 with engine = browser fallback flag
-            return {
-                "audio_base64": "",
-                "format": "mp3",
-                "engine": "browser_fallback",
-                "text_to_speak": req.text,
-                "language_code": req.language_code
-            }
+        # Client-side browser speech when Polly is unavailable (local dev, unsupported language)
+        return {
+            "audio_base64": "",
+            "format": "mp3",
+            "engine": "browser_fallback",
+            "text_to_speak": req.text,
+            "language_code": req.language_code
+        }
     except Exception as e:
         return {"error": str(e)}
 
 # 3. /api/voice/translate
 @router.post("/translate")
 def translate(req: TranslateRequest):
+    # Amazon Translate first (purpose-built, cheaper per call); LLM as fallback
+    aws_translated = aws.translate_text(req.text, req.source_language, req.target_language)
+    if aws_translated is not None:
+        return {
+            "translated_text": aws_translated,
+            "source_language": req.source_language,
+            "target_language": req.target_language,
+            "engine": "amazon_translate"
+        }
     try:
-        # Google Translation API v3 fallback via Gemini
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        # LLM translation fallback
         prompt = (
             f"Translate the following text to '{req.target_language}'. "
             f"If source language is '{req.source_language}', auto-detect it. "
             "Return only the translated text, with no extra formatting, quotes, or introductory text.\n\n"
             f"Text: {req.text}"
         )
-        response = model.generate_content(prompt)
-        translated_text = response.text.strip()
+        translated_text = llm.generate(prompt, temperature=0.1).strip()
         
         return {
             "translated_text": translated_text,
@@ -196,7 +133,6 @@ def translate(req: TranslateRequest):
 @router.post("/command")
 def command(req: CommandRequest):
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = (
             "You are a clinical voice command interpreter for a physician dashboard called ClinIQ+. "
             f"The physician said: \"{req.transcribed_text}\". They are currently on the \"{req.current_page}\" page "
@@ -228,8 +164,7 @@ def command(req: CommandRequest):
             "Return ONLY the JSON block, no markdown formatting."
         )
         
-        response = model.generate_content(prompt)
-        parsed_action = clean_gemini_json(response.text)
+        parsed_action = llm.generate_json(prompt, temperature=0.1)
         
         # Log to voice_commands_log
         db_service.log_voice_command(
@@ -264,14 +199,15 @@ async def consultation_record(
     audio_bytes = await audio.read()
     if not audio_bytes:
         raise HTTPException(status_code=400, detail="Empty recording")
+    aws.archive_to_s3(f"uploads/consultations/{patient_id}", audio_bytes, audio.content_type or "audio/webm", "consultation.webm")
 
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
-        mime_type = audio.content_type or "audio/webm"
-        
+        transcript = llm.transcribe(audio_bytes, audio.filename or "consultation.webm",
+                                    audio.content_type or "audio/webm", None, MEDICAL_VOCAB_HINT)
+
         prompt = (
-            "You are a clinical scribe. Process this consultation dialog audio between a physician and patient. "
-            "First, generate a transcript of the conversation, trying to distinguish the speaker (Physician vs Patient). "
+            "You are a clinical scribe. Below is the transcript of a consultation between a physician and patient. "
+            "First, rewrite the transcript labelling each turn with the speaker (Physician vs Patient). "
             "Second, extract the following structured clinical notes:\n"
             "- chief_complaint: The primary symptom or reason for visit.\n"
             "- symptoms_mentioned: A list of symptoms (e.g. fatigue, chest pain).\n"
@@ -295,14 +231,9 @@ async def consultation_record(
             "}"
         )
         
-        response = model.generate_content([
-            {"mime_type": mime_type, "data": audio_bytes},
-            prompt
-        ])
+        parsed_result = llm.generate_json(f"{prompt}\n\nTRANSCRIPT:\n{transcript}", temperature=0.1)
         
-        parsed_result = clean_gemini_json(response.text)
-        
-        raw_transcript = parsed_result.get("raw_transcript", "Transcript unavailable.")
+        raw_transcript = parsed_result.get("raw_transcript") or transcript or "Transcript unavailable."
         structured_note = parsed_result.get("structured_note", {})
         
         # Save note to local SQLite
@@ -345,31 +276,16 @@ async def patient_symptom(
     audio_bytes = await audio.read()
     if not audio_bytes:
         raise HTTPException(status_code=400, detail="Empty symptom audio")
+    aws.archive_to_s3(f"uploads/symptoms/{patient_id}", audio_bytes, audio.content_type or "audio/webm", "symptom.webm")
 
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
-        mime_type = audio.content_type or "audio/webm"
-        
-        # Transcribe and translate to English
-        transcript_prompt = (
-            f"The audio is a patient describing symptoms. The spoken language is {language_code}. "
-            "First, transcribe this text accurately in the native spoken language. "
-            "Second, translate the transcription into English. "
-            "Return only a JSON object in this format:\n"
-            "{\n"
-            "  \"native_transcript\": \"...\",\n"
-            "  \"english_translation\": \"...\"\n"
-            "}"
-        )
-        
-        t_res = model.generate_content([
-            {"mime_type": mime_type, "data": audio_bytes},
-            transcript_prompt
-        ])
-        parsed_trans = clean_gemini_json(t_res.text)
-        
-        native_text = parsed_trans.get("native_transcript", "")
-        english_text = parsed_trans.get("english_translation", "")
+        # Whisper transcribes in the patient's own language; then translate to English
+        native_text = llm.transcribe(audio_bytes, audio.filename or "symptom.webm",
+                                     audio.content_type or "audio/webm", language_code)
+        english_text = native_text
+        if not language_code.startswith("en"):
+            english_text = (aws.translate_text(native_text, language_code, "en")
+                            or llm.generate(f"Translate this patient's words into English. Return only the translation.\n\n{native_text}", temperature=0.1).strip())
         
         # Extract structured data
         extraction_prompt = (
@@ -388,8 +304,7 @@ async def patient_symptom(
             "}"
         )
         
-        e_res = model.generate_content(extraction_prompt)
-        extracted_data = clean_gemini_json(e_res.text)
+        extracted_data = llm.generate_json(extraction_prompt, temperature=0.2)
         
         # Translate the reassuring advice back to the patient's language
         advice_en = extracted_data.get("reassuring_advice_english", "Thank you, I have logged your symptoms. The doctor will review them shortly.")
@@ -401,9 +316,29 @@ async def patient_symptom(
             f"Text: {advice_en}"
         )
         
-        tb_res = model.generate_content(trans_back_prompt)
-        advice_native = tb_res.text.strip()
+        advice_native = (aws.translate_text(advice_en, "en", language_code)
+                         or llm.generate(trans_back_prompt, temperature=0.3).strip())
         
+        severity = extracted_data.get("severity", 0)
+        try:
+            severity = int(severity)
+        except (TypeError, ValueError):
+            severity = 0
+
+        # High-severity symptoms page the physician via SNS (email/SMS subscribers)
+        if severity >= 7:
+            aws.publish_alert(
+                f"ClinIQ+ ALERT: patient {patient_id} reported severity {severity}/10",
+                {
+                    "patient_id": patient_id,
+                    "primary_complaint": extracted_data.get("primary_complaint"),
+                    "severity": severity,
+                    "duration": extracted_data.get("duration"),
+                    "associated_symptoms": extracted_data.get("associated_symptoms"),
+                    "english_translation": english_text,
+                },
+            )
+
         # Save interaction log
         db_service.save_patient_interaction(
             patient_id=patient_id,
@@ -411,7 +346,7 @@ async def patient_symptom(
             spoken_input=native_text,
             detected_language=language_code,
             structured_output_json=extracted_data,
-            physician_alerted=1 if extracted_data.get("severity", 0) >= 7 else 0
+            physician_alerted=1 if severity >= 7 else 0
         )
         
         return {
@@ -451,8 +386,8 @@ async def clinical_voice_query(
         print("Voice Query Error:", e)
 
         error_detail = str(e)
-        if "GEMINI_API_KEY" in error_detail:
-            summary = "AI service is not configured. Set GEMINI_API_KEY in cliniq-backend/.env and restart the backend."
+        if "GROQ_API_KEY" in error_detail:
+            summary = "AI service is not configured. Set GROQ_API_KEY in cliniq-backend/.env and restart the backend."
         else:
             summary = f"Failed to process query: {error_detail}"
 

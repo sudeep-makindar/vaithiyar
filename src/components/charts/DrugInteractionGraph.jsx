@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
+import { BASE_API } from '../../config.js';
 
 const DrugInteractionGraph = ({ patient }) => {
   const svgRef = useRef(null);
@@ -10,7 +11,7 @@ const DrugInteractionGraph = ({ patient }) => {
     if (!patient) return;
     
     // Fetch all drug interactions from the backend
-    fetch(`https://dry-frog-85.loca.lt/api/patient/${patient.id}/interactions`)
+    fetch(`${BASE_API}/patient/${patient.id}/interactions`)
       .then(res => res.json())
       .then(data => {
         setInteractions(data);
