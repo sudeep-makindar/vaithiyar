@@ -180,4 +180,4 @@ ALERT_EMAIL=you@example.com ./infra/deploy.sh       # also email alerts + a $10 
 ## 📚 Documentation
 - [AWS services: what we implemented and how](docs/AWS_Services_Explained.md)
 - [The website, page by page](docs/Website_Explained.md)
-- [Presentation prompts (Gamma)](docs/presentation/)
+- [Presentation deck and materials](https://github.com/sudeep-makindar/vaithiyar-presentation)
