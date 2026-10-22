@@ -1,11 +1,13 @@
-# 🏥 ClinIQ+: Clinical Intelligence Platform
+# 🏥 Vaithiyar: Clinical Intelligence Platform (ClinIQ+)
+
+> **Live demo:** https://dcngngptdqg14.cloudfront.net · **Presentation:** https://github.com/sudeep-makindar/vaithiyar-presentation
 
 [![Cloud](https://img.shields.io/badge/Cloud-AWS%20Serverless-orange?style=flat-square&logo=amazonaws)](https://aws.amazon.com)
 [![Vite](https://img.shields.io/badge/Vite-7.3-yellow?style=flat-square&logo=vite)](https://vitejs.dev)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Python-blue?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Groq](https://img.shields.io/badge/AI-Groq%20LPU-red?style=flat-square)](https://groq.com)
 
-ClinIQ+ is a state-of-the-art, AI-powered physician co-pilot, patient engagement agent, and clinical decision support system (CDSS). It integrates advanced multimodal language models, visual pill scanners, real-time multilingual voice command systems, deterministic safety gates, and dynamic graph visualizations to streamline clinical workflows and improve patient safety.
+**Vaithiyar** (*vaithiyar*, Tamil for "doctor"), built as the ClinIQ+ platform, is a state-of-the-art, AI-powered physician co-pilot, patient engagement agent, and clinical decision support system (CDSS). It integrates advanced multimodal language models, visual pill scanners, real-time multilingual voice command systems, deterministic safety gates, and dynamic graph visualizations to streamline clinical workflows and improve patient safety.
 
 ---
 
@@ -172,3 +174,10 @@ Prerequisites: AWS CLI profile `cliniq`, Node.js, [uv](https://docs.astral.sh/uv
 ALERT_EMAIL=you@example.com ./infra/deploy.sh       # also email alerts + a $10 monthly budget
 ./infra/destroy.sh                                  # remove everything when finished
 ```
+
+---
+
+## 📚 Documentation
+- [AWS services: what we implemented and how](docs/AWS_Services_Explained.md)
+- [The website, page by page](docs/Website_Explained.md)
+- [Presentation prompts (Gamma)](docs/presentation/)
